@@ -1,0 +1,48 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI Test Runner
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  issues:
+    branches: [ master ]
+
+
+jobs:
+  test:
+    name: Running Tests with npm test
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+    - name: Slack Notification
+      if: ${{ failure() }}
+      uses: rtCamp/action-slack-notify@v2.0.0
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_USERNAME: npmTestBot
+        SLACK_TITLE: "One or more tests failed. Commit message: "
+
+  repo-dispatch:
+    name: Performs Repository Dispatch to trigger workflow
+    runs-on: ubuntu-latest
+    #needs: test
+    steps:
+    - name: Repository Dispatch  
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        event-type: passed-tests
