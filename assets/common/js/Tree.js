@@ -56,8 +56,9 @@ const DEMO_DIRECTORY_TREE_KEY = '6ABDc';
  * Use with the defined constants for easy and clean one time
  * access to our database elements.
  * 
- * @param {string} Directory of the database you're reading.
- * @param {string} Key of the directory you're reading.
+ * @param   {string}  Directory of the database you're reading.
+ * @param   {string}  Key of the directory you're reading.
+ * @returns {promise} Eventually becomes the value you requested.
  */
 function getEntrySnapshotWithKey(type, key){
   return dbAccess.ref(type + key).once('value');
@@ -67,9 +68,10 @@ function getEntrySnapshotWithKey(type, key){
  * Use with the defined constants for easy and clean one time
  * access to our database elements.
  * 
- * @param {string} Directory of the database you're reading.
- * @param {string} Key of the directory you're reading.
- * @param {function} callback function for a change.
+ * @param   {string}   Directory of the database you're reading.
+ * @param   {string}   Key of the directory you're reading.
+ * @param   {function} callback function for a change.
+ * @returns {promise}  Eventually becomes the value you requested.
  */
 function subscribeToChanges(type, key, func){
   return dbAccess.ref(type + key).on('value', func);
@@ -145,6 +147,9 @@ function displayDirectoryTree(){
 
 /**
  * Print the source graph of the JSON dir.
+ * 
+ * @param   {function} callback function for a change.
+ * @returns {promise}  Eventually becomes the value you requested.
  */
 function generateSourceTree(dir){
     var formattedString = "";
@@ -165,8 +170,9 @@ function generateSourceTree(dir){
  * Generates the code graph from the current file, and prepends the
  * filename with a parentPrefix.
  * 
- * @param {object} JSON representation of directory.
- * @param {string} prefix to prepend this line with.
+ * @param   {object}  JSON representation of directory.
+ * @param   {string}  prefix to prepend this line with.
+ * @returns {promise} Eventually becomes the value you requested.
  */
 function generateSourceTreeRec(file, parentPrefix){
     var PREFIXES = [[" ├─ ", " │  " ], [" └─ ", "    "]]
@@ -199,7 +205,8 @@ function generateSourceTreeRec(file, parentPrefix){
 /**
  * Check if the file with this key is being edited by anyone.
  * 
- * @param {string} Filekey to format an editor string for.
+ * @param   {string} Filekey to format an editor string for.
+ * @returns {string} Formatted list of editors for the file.
  */
 function listEditorsOf(key){
   var str = '(';
@@ -228,6 +235,13 @@ function listEditorsOf(key){
   
 }
 
+/**
+ * Checks if this index is the last.
+ * 
+ * @param   {[]}     an array
+ * @param   {number} an index
+ * @returns {boolean} True if it is the last index.
+ */
 function isLastElementInArray(arr, index){
     return index == (arr.length - 1);
 }
