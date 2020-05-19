@@ -11,20 +11,29 @@
  */
 
 let directoryTree;
-
-let fileList = [];
-let subscribedFileList = [];
-
-let editorKeyToNameMap  = {};
-let fileKeyToEditorsMap = {};
+let fileKeyToNameMap   = {};
+let editorToFileKeyMap = {};
 
 // DIRECTORY ACCESS CONSTANTS.
-const DIRECTORY_TREE = '/directory_trees/'
-const TEAM_MAP       = '/team_maps/';
-const FILE           = '/files/';
-const USER           = '/users/';
+const DIRECTORY_TREE  = '/directory_trees/'
+const TEAM_MAP        = '/team_maps/';
+const CURRENT_EDITORS = '/current_editors/'
+const FILE            = '/files/';
+const USER            = '/users/';
 
+// REFRESH RATE
+const SECONDS_PER_REFRESH = 2;
+
+// DEMO CONSTANTS
 const DEMO_DIRECTORY_TREE_KEY = '6ABDc';
+const DEMO_TEAM_MAP_KEY       = '-M7dIwiWCwphSFKAE9RF'
+
+let firstTreePrint = true;
+let editorsChanged = false;
+let directoryStructureChanged = false;
+
+let directoryTreeKey = DEMO_DIRECTORY_TREE_KEY;
+let teamMapKey       = DEMO_TEAM_MAP_KEY;
 
 /**
  *  Called after webpage loads. Initializes our database access,
@@ -48,25 +57,42 @@ async function createTree(){
     // Reference used to read from database.
     dbAccess = firebase.database();
 
+    // teamMapKey = [url query thing]
+  
+    // Subscribe to team_map current_editors
+    await subscribeToChanges(TEAM_MAP, teamMapKey, (snap) => {
+      editorToFileKeyMap = snap.val()["current_editors"];
+      editorsChanged  = true;
+
+
+    });
+    
     // Load contents of this tree from firebase, list to its files, and display asynchronously.
-    subscribeToChanges(DIRECTORY_TREE, DEMO_DIRECTORY_TREE_KEY, async snap => {
+    await subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async snap => {
       directoryTree = snap.val();
+      directoryStructureChanged = true;
 
       // Find new files.
-      await generateFileMap();
+      generateFileKeyToNameMap();
 
-      // Subscribe to new files.
-      await subscribeToFiles();
-    
-      // Display immediately when tree structure changes.
-      displayDirectoryTree();
-    })
+      if(firstTreePrint){
+        displayDirectoryTree();
+        firstTreePrint            = false;
+        directoryStructureChanged = false;
+        editorsChanged            = false;
+      }
+    });
+
 
     // Update the tree with new user editor positions every 10 seconds.
     // We could add a boolean here to only update if a file has changed in the interval.
     setInterval(() => { 
-      displayDirectoryTree(); 
-    }, 10000);
+      if(editorsChanged || directoryStructureChanged){
+        displayDirectoryTree(); 
+        editorsChanged            = false;
+        directoryStructureChanged = false;
+      }
+    }, SECONDS_PER_REFRESH * 1000);
 
 }
 
@@ -96,70 +122,10 @@ function subscribeToChanges(type, key, func){
 }
 
 /**
- * Subscribe to any new files in the directory tree that you have yet to
- * subscribe to.
- */
-async function subscribeToFiles(){
-
-  // Look over all the files we have found in the tree.
-  fileList.forEach(async fileKey => {
-
-    // Ignore any files we've already suscribed to.
-    if(subscribedFileList.includes(fileKey)){
-      return;
-    } else {
-      subscribedFileList.push(fileKey);
-    }
-
-    // Subscribe the any new ones.
-    await subscribeToChanges(FILE, fileKey, snap => {
-      getEditorsNames(snap.val()["current_editors"]).then(names => {
-        fileKeyToEditorsMap[fileKey] = names;
-      });
-    });
-  });
-}
-
-/**
- * Get the name corresponding with each editor key in this map.
- * editor1 -> key
- * editor2 -> key
- * ...
- * @param {object} editorKeys 
- */
-async function getEditorsNames(editorKeys){
-  if(typeof(editorKeys) == 'string'){
-    // No editors.
-    return [];
-  }
-
-  // Populate user list with new users.
-  for(let [_, editorKey] of Object.entries(editorKeys)){
-    // We already know the name of this editor.
-    if(editorKeyToNameMap.hasOwnProperty(editorKey)){
-      continue;
-    }
-
-    // We need to get the name of this editor.
-    await getEntrySnapshotWithKey(USER, editorKey).then(snap => {
-      editorKeyToNameMap[editorKey] = snap.val()['firstName'] + " " + snap.val()['lastName']
-    });
-  }
-
-  // Find the names our editors with the passed in keys.
-  editorNames = []
-  for(let editorKey in editorKeys){
-    editorNames.push(editorKeyToNameMap[editorKeys[editorKey]]);
-  }
- 
-  return editorNames;
-}
-
-/**
  * Helper function of initializeDirectoryTree. Generates a fileKey -> editor
  * map so that we can get editors names while displaying the tree.
  */
-async function generateFileMap(){
+function generateFileKeyToNameMap(){
   let toSearch    = [directoryTree];
   let fileKeyList = [];
 
@@ -167,42 +133,16 @@ async function generateFileMap(){
   while(!(toSearch.length == 0)){
     subDir = toSearch.pop();
     for(let file in subDir){
-      if(typeof(subDir[file]) == 'string'){
-        // We found a regular file.
-        fileKeyList.push(subDir[file]);
+      if(fileKeyToNameMap.hasOwnProperty(subDir[file])){
+        continue;
+      }
 
-        // We haven't seen this file before.
-        if(!fileList.includes(subDir[file])){
-          fileList.push(subDir[file])
-        }
+      if(typeof(subDir[file]) == 'string'){
+        fileKeyToNameMap[subDir[file]] = file.replace(',', '.');
       } else {
         toSearch.push(subDir[file]);
       }
     }
-  }
-
-  // Get the current editors for each file.
-  for(let index in fileKeyList){
-    await getEntrySnapshotWithKey(FILE, fileKeyList[index]).then(snap => {
-      fileKeyToEditorsMap[fileKeyList[index]] = snap.val()["current_editors"];
-    })
-  }
-
-  // Get the names of the editors for each file.
-  for(let fileKey in fileKeyToEditorsMap){
-    let editorNameList = [];
-    for(let editor in fileKeyToEditorsMap[fileKey]){
-      await getEntrySnapshotWithKey(USER, fileKeyToEditorsMap[fileKey][editor]).then(snap => {
-        if(snap.val() == null){
-          return;
-        }
-
-        let user = snap.val();
-        editorNameList.push(user['firstName'] + " " + user['lastName']);
-      })
-    }
-
-    fileKeyToEditorsMap[fileKey] = editorNameList;
   }
 }
 
@@ -266,9 +206,9 @@ function generateSourceTreeRec(file, parentPrefix){
 
         // Base case: This is a filekey. 
         if(typeof(value) === 'string'){
-          formattedString += parentPrefix + currentPrefix[0] + key.replace(",", ".") + " " +  listEditorsOf(value) + "\n";
+          formattedString += parentPrefix + currentPrefix[0] + key + " " +  listEditorsOf(value) + "\n";
         } else {
-          formattedString += parentPrefix + currentPrefix[0] + key.replace(",", ".")  + "\n";
+          formattedString += parentPrefix + currentPrefix[0] + key + "\n";
           formattedString += generateSourceTreeRec(value, parentPrefix + currentPrefix[1]);
         }
     }
@@ -285,9 +225,11 @@ function generateSourceTreeRec(file, parentPrefix){
 function listEditorsOf(key){
   let str = '(';
   let fileHadEntry = false;
-  for(let editor in fileKeyToEditorsMap[key]){
-    str += '<span style="color:red">' + fileKeyToEditorsMap[key][editor] + "</span>, ";
-    fileHadEntry = true;
+  for(let editor in editorToFileKeyMap){
+    if(editorToFileKeyMap[editor] == key){
+      str += '<span style="color:red">' + editor + "</span>, ";
+      fileHadEntry = true;
+    }
   }
 
   str += ')';
@@ -315,17 +257,4 @@ function isLastElementInArray(arr, index){
     return index == (arr.length - 1);
 }
 
-
-// Code to help with testing.
-
-/**
- * Test helper function to set file -> editor map manually.
- * 
- */
-function setFileKeyToEditorsMap(newMap){
-  fileKeyToEditorsMap = newMap;
-}
-
-testObject                           = {}
-testObject["generateSourceTree"]     = generateSourceTree;
-testObject["setFileKeyToEditorsMap"] = setFileKeyToEditorsMap;
+testObject = {}
