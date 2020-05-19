@@ -24,22 +24,20 @@ const USER            = '/users/';
 // REFRESH RATE
 const SECONDS_PER_REFRESH = 2;
 
-// DEMO CONSTANTS
-const DEMO_DIRECTORY_TREE_KEY = '6ABDc';
-const DEMO_TEAM_MAP_KEY       = '-M7dIwiWCwphSFKAE9RF'
-
 let firstTreePrint = true;
 let editorsChanged = false;
 let directoryStructureChanged = false;
 
-let directoryTreeKey = DEMO_DIRECTORY_TREE_KEY;
-let teamMapKey       = DEMO_TEAM_MAP_KEY;
+let directoryTreeKey;
+let teamMapKey;
+
+let subscribedToEditorChanges = false;
 
 /**
  *  Called after webpage loads. Initializes our database access,
  *  and currently displays a demo tree.
  */
-async function createTree(){
+function createTree(){
     let firebaseConfig = {
         apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
         authDomain: "remote-13.firebaseapp.com",
@@ -57,43 +55,51 @@ async function createTree(){
     // Reference used to read from database.
     dbAccess = firebase.database();
 
-    // teamMapKey = [url query thing]
+    teamMapKey = "-M7dIwiWCwphSFKAE9RF";
   
     // Subscribe to team_map current_editors
-    await subscribeToChanges(TEAM_MAP, teamMapKey, (snap) => {
+    subscribeToChanges(TEAM_MAP, teamMapKey, (snap) => {
       editorToFileKeyMap = snap.val()["current_editors"];
+      directoryTreeKey   = snap.val()["rootFolder"];
+
       editorsChanged  = true;
 
-
-    });
-    
-    // Load contents of this tree from firebase, list to its files, and display asynchronously.
-    await subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async snap => {
-      directoryTree = snap.val();
-      directoryStructureChanged = true;
-
-      // Find new files.
-      generateFileKeyToNameMap();
-
-      if(firstTreePrint){
-        displayDirectoryTree();
-        firstTreePrint            = false;
-        directoryStructureChanged = false;
-        editorsChanged            = false;
+      
+      if(subscribedToEditorChanges){
+        // If we have already subscribed to the directory tree using the information, 
+        // in team_map then we don't have any more work to do.
+        return;
       }
+
+      // Once we have loaded the team_map info, load the directory tree.
+      subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async snap => {
+        subscribedToEditorChanges = true;
+        
+        // Update tree structure.
+        directoryTree = snap.val();
+        directoryStructureChanged = true;
+
+        // Find new files.
+        generateFileKeyToNameMap();
+
+        // Only run this once to get our tree displayed / refreshing.
+        if(firstTreePrint){
+          displayDirectoryTree();
+          firstTreePrint            = false;
+          directoryStructureChanged = false;
+          editorsChanged            = false;
+
+          // Once we have loaded all the necessary information, 
+          setInterval(() => { 
+            if(editorsChanged || directoryStructureChanged){
+              displayDirectoryTree(); 
+              editorsChanged            = false;
+              directoryStructureChanged = false;
+            }
+          }, SECONDS_PER_REFRESH * 1000);
+        }
+      });
     });
-
-
-    // Update the tree with new user editor positions every 10 seconds.
-    // We could add a boolean here to only update if a file has changed in the interval.
-    setInterval(() => { 
-      if(editorsChanged || directoryStructureChanged){
-        displayDirectoryTree(); 
-        editorsChanged            = false;
-        directoryStructureChanged = false;
-      }
-    }, SECONDS_PER_REFRESH * 1000);
-
 }
 
 /**
@@ -133,7 +139,8 @@ function generateFileKeyToNameMap(){
   while(!(toSearch.length == 0)){
     subDir = toSearch.pop();
     for(let file in subDir){
-      if(fileKeyToNameMap.hasOwnProperty(subDir[file])){
+      if(fileKeyToNameMap.hasOwnProperty(subDir[file]) && fileKeyToNameMap[subDir[file]] == file){
+        // We already know about this file, and it hasn't been renamed.
         continue;
       }
 
