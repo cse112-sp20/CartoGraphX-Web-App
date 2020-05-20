@@ -1,9 +1,28 @@
-<!DOCTYPE html>
+
+
 <html>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <head>
-        <title>ChartGraphX Web Application</title>
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="./assets/common/css/latex.css">     
     </head>
+    <h1>Remote 13: Source Code Visualizer</h1>
     <body>
-        <h1 id="title-header">Hello Remote13!</h1>
+        <form id="mapForm">
+            <div class = "form-group">
+            <label for="exampleInputEmail1">Please put in your team map key</label>
+            <input class="form-control" id="mapKey" aria-describedby="mapHelp" placeholder="Enter Map Key">
+            <button type="submit" class="btn btn-primary">Display Map</button>
+            </div>        
+        </form>
+        <script src="./assets/common/js/index.js"></script>
+
+        <pre id="tree">
+            <!--Tree!-->
+        </pre>
+        
     </body>
 </html>
