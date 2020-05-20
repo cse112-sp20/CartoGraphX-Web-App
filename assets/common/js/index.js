@@ -32,15 +32,18 @@ let editorsChanged = false;
 let directoryStructureChanged = false;
 let subscribedToEditorChanges = false;
 
-const getMapForm = document.querySelector('#mapForm');
+function initializeEventListener(){
+  const getMapForm = document.querySelector('#mapForm');
 
-document.addEventListener('submit', (e) => {
-    e.preventDefault();
-    console.log("getMapKey has been called!");
-    let mapK = getMapForm['mapKey'].value;
-    console.log(mapK);
-    createTree(mapK);
-});
+  document.addEventListener('submit', (e) => {
+      e.preventDefault();
+      console.log("getMapKey has been called!");
+      let mapK = getMapForm['mapKey'].value;
+      console.log(mapK);
+      createTree(mapK);
+  });
+}
+
 
 /**
  *  Called after webpage loads. Initializes our database access,
@@ -222,7 +225,7 @@ function generateSourceTreeRec(file, parentPrefix){
         if(typeof(value) === 'string'){
           formattedString += parentPrefix + currentPrefix[0] + fileKeyToNameMap[value] + " " +  listEditorsOf(value) + "\n";
         } else {
-          formattedString += parentPrefix + currentPrefix[0] + fileKeyToNameMap[value]  + "\n";
+          formattedString += parentPrefix + currentPrefix[0] + key.split(",").join(".")  + "\n";
           formattedString += generateSourceTreeRec(value, parentPrefix + currentPrefix[1]);
         }
     }
@@ -256,7 +259,7 @@ function listEditorsOf(fileKey){
     return str.substring(0, str.length - 3) + ")";
   } else {
     // Otherwise it's empty and just prints ()
-    return str;
+    return "";
   }
   
 }
@@ -282,4 +285,20 @@ function isLastElementInArray(arr, index){
     return index == (arr.length - 1);
 }
 
+
+// TEST CODE
+
+function setDirectoryStructure(newMap){
+  directoryTree = newMap;
+}
+
+function setEditorToFileKeyMap(newMap){
+  editorToFileKeyMap = newMap;
+}
+
+
 testObject = {}
+testObject["setDirectoryTree"]         = setDirectoryStructure;
+testObject["generateSourceTree"]       = generateSourceTree;
+testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
+testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;
