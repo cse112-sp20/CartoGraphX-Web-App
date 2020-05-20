@@ -239,9 +239,10 @@ function generateSourceTreeRec(file, parentPrefix){
 function listEditorsOf(fileKey){
   let str = '(';
   let fileHadEntry = false;
-  for(let editor in editorToFileKeyMap){
-    if(editorToFileKeyMap[editor] == fileKey){
-      str += '<span style="color:red">' + editor + "</span>, ";
+
+  for(let editorName in editorToFileKeyMap){
+    if(editorToFileKeyMap[editorName] == fileKey){
+      str += colorText(editorName, "red") + ", ";
       fileHadEntry = true;
     }
   }
@@ -258,6 +259,16 @@ function listEditorsOf(fileKey){
     return str;
   }
   
+}
+
+/**
+ * Uses inline style to give color to a span of text.
+ * 
+ * @param {string} color color to give an html span
+ * @param {*} text text to give color
+ */
+function colorText(text, color){
+  return '<span style="color:' + color + '">' + text + "</span>";
 }
 
 /**
