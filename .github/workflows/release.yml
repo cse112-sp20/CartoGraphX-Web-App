@@ -1,0 +1,27 @@
+name: Release
+on: 
+    push:
+        branches: master
+jobs:
+    release:
+        name: Release
+        needs: minify
+        runs-on: ubuntu-18.04
+        steps:
+        -   name: Checkout
+            uses: actions/checkout@v2
+        -   name: Setup Node.js
+            uses: actions/setup-node@v1
+            with:
+                node-version: 12
+        -   name: Install dependencies
+            run: npm install
+        -   name: Release
+            env:
+                GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+                NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            run: npx semantic-release
+        -   name: Auto committing package.json
+            uses: stefanzweifel/git-auto-commit-action@v4.1.6
+            with:
+                commit_message: "Updated package.json version"
