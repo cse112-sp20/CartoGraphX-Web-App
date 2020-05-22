@@ -1,0 +1,10 @@
+{
+	"name": "auto-minify",
+	"repository": "nizarmah/auto-minify",
+	"homepage": "https://github.com/nizarmah/auto-minify/",
+	"dependencies": {
+		"babel-minify": "^0.5.1",
+		"html-minifier": "^4.0.0",
+		"clean-css-cli": "^4.3.0"
+	}
+}
