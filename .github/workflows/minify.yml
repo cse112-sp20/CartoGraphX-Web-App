@@ -1,0 +1,28 @@
+name: Minify
+on: push
+jobs:
+    minify:
+        runs-on: ubuntu-latest
+        steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so auto-minify job can access it
+        -   uses: actions/checkout@v2
+        -   name: Auto Minify CSS
+            uses: ./.github/workflows/auto-minify
+            with:
+                directory: 'assets/common/css'
+                output: 'min_assets/common/css'
+        -   name: Auto Minify JS
+            uses: ./.github/workflows/auto-minify
+            with:
+                directory: 'assets/common/js'
+                output: 'min_assets/common/js'
+        -   name: Auto Minify HTML
+            uses: ./.github/workflows/auto-minify
+            with:
+                directory: 'assets/common/html'
+                output: 'min_assets/common/html'
+            # Auto commits minified files to the repository
+        -   name: Auto committing minified files
+            uses: stefanzweifel/git-auto-commit-action@v4.1.6
+            with:
+                commit_message: "Github Action: Auto Minified JS, CSS, and HTML files"
