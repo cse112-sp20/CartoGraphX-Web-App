@@ -32,19 +32,6 @@ let editorsChanged = false;
 let directoryStructureChanged = false;
 let subscribedToEditorChanges = false;
 
-function initializeEventListener(){
-  const getMapForm = document.querySelector('#mapForm');
-
-  document.addEventListener('submit', (e) => {
-      e.preventDefault();
-      console.log("getMapKey has been called!");
-      let mapK = getMapForm['mapKey'].value;
-      console.log(mapK);
-      createTree(mapK);
-  });
-}
-
-
 /**
  *  Called after webpage loads. Initializes our database access,
  *  and currently displays a demo tree.
@@ -61,8 +48,6 @@ function createTree(teamMapKey){
       measurementId: "G-3F5MRDS2LK"
   };
   
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
 
   // Reference used to read from database.
   dbAccess = firebase.database();
