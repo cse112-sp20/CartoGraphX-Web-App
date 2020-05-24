@@ -1,4 +1,3 @@
-
 var config = {
     apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
     authDomain: "remote-13.firebaseapp.com",
