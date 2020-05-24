@@ -23,7 +23,7 @@
   /**
    * @return {string} The email signInMethod from the configuration.
    */
-  function getEmailSignInMethod() {
+  const getEmailSignInMethod = () => {
     var config = parseQueryString(location.hash);
     return config['emailSignInMethod'] === 'password' ?
         'password' : 'emailLink';
@@ -34,7 +34,7 @@
    * @param {string} queryString The full query string.
    * @return {!Object<string, string>} The parsed query parameters.
    */
-  function parseQueryString(queryString) {
+  const parseQueryString = (queryString) => {
     // Remove first character if it is ? or #.
     if (queryString.length &&
         (queryString.charAt(0) == '#' || queryString.charAt(0) == '?')) {

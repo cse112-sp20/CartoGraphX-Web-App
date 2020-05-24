@@ -35,20 +35,10 @@ let subscribedToEditorChanges = false;
 /**
  *  Called after webpage loads. Initializes our database access,
  *  and currently displays a demo tree.
+ * 
+ * @param {string} teamMapKey The firebase identification key for the map.
  */
-function createTree(teamMapKey){
-  let firebaseConfig = {
-      apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
-      authDomain: "remote-13.firebaseapp.com",
-      databaseURL: "https://remote-13.firebaseio.com",
-      projectId: "remote-13",
-      storageBucket: "remote-13.appspot.com",
-      messagingSenderId: "113160307201",
-      appId: "1:113160307201:web:fc2dda4c33c5d2ce4ff600",
-      measurementId: "G-3F5MRDS2LK"
-  };
-  
-
+const createTree = (teamMapKey) => {
   // Reference used to read from database.
   dbAccess = firebase.database();
 
@@ -67,7 +57,7 @@ function createTree(teamMapKey){
     }
 
     // Once we have loaded the team_map info, load the directory tree.
-    subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async snap => {
+    subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async (snap) => {
       subscribedToEditorChanges = true;
       
       // Update tree structure.
@@ -105,7 +95,7 @@ function createTree(teamMapKey){
  * @param   {string}  Key of the directory you're reading.
  * @returns {promise} Eventually becomes the value you requested.
  */
-function getEntrySnapshotWithKey(type, key){
+const getEntrySnapshotWithKey = (type, key) => {
   return dbAccess.ref(type + key).once('value');
 }
 
@@ -118,7 +108,7 @@ function getEntrySnapshotWithKey(type, key){
  * @param   {function} callback function for a change.
  * @returns {promise}  Eventually becomes the value you requested.
  */
-function subscribeToChanges(type, key, func){
+const subscribeToChanges = (type, key, func) => {
   return dbAccess.ref(type + key).on('value', func);
 }
 
@@ -126,7 +116,7 @@ function subscribeToChanges(type, key, func){
  * Helper function of initializeDirectoryTree. Generates a fileKey -> editor
  * map so that we can get editors names while displaying the tree.
  */
-function generateFileKeyToNameMap(){
+const generateFileKeyToNameMap = () => {
   let toSearch    = [directoryTree];
   let fileKeyList = [];
 
@@ -151,7 +141,7 @@ function generateFileKeyToNameMap(){
 /**
  * Updates the HTML pre to display the current tree.
  */
-function displayDirectoryTree(){
+const displayDirectoryTree = () => {
   const preField = document.getElementById('tree');
 
   str = generateSourceTree(directoryTree)
@@ -167,7 +157,7 @@ function displayDirectoryTree(){
  * @param   {function} callback function for a change.
  * @returns {promise}  Eventually becomes the value you requested.
  */
-function generateSourceTree(dir){
+const generateSourceTree = (dir) => {
     let formattedString = "";
 
     for(topLevelFile in dir){
@@ -190,7 +180,7 @@ function generateSourceTree(dir){
  * @param   {string}  prefix to prepend this line with.
  * @returns {promise} Eventually becomes the value you requested.
  */
-function generateSourceTreeRec(file, parentPrefix){
+const generateSourceTreeRec = (file, parentPrefix) => {
     let PREFIXES = [[" ├─ ", " │  " ], [" └─ ", "    "]]
     let directoryStructure = Object.entries(Object.entries(file));
     let formattedString = "";
@@ -224,7 +214,7 @@ function generateSourceTreeRec(file, parentPrefix){
  * @param   {string} File key to format an editor string for.
  * @returns {string} Formatted list of editors for the file.
  */
-function listEditorsOf(fileKey){
+const listEditorsOf = (fileKey) => {
   let str = '(';
   let fileHadEntry = false;
 
@@ -255,7 +245,7 @@ function listEditorsOf(fileKey){
  * @param {string} color color to give an html span
  * @param {*} text text to give color
  */
-function colorText(text, color){
+const colorText = (text, color) => {
   return '<span style="color:' + color + '">' + text + "</span>";
 }
 
@@ -266,18 +256,18 @@ function colorText(text, color){
  * @param   {number} an index
  * @returns {boolean} True if it is the last index.
  */
-function isLastElementInArray(arr, index){
+const isLastElementInArray = (arr, index) => {
     return index == (arr.length - 1);
 }
 
 
 // TEST CODE
 
-function setDirectoryStructure(newMap){
+const setDirectoryStructure = (newMap) => {
   directoryTree = newMap;
 }
 
-function setEditorToFileKeyMap(newMap){
+const setEditorToFileKeyMap = (newMap) => {
   editorToFileKeyMap = newMap;
 }
 
