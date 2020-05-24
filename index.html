@@ -1,28 +1,73 @@
-
-
+<!DOCTYPE html>
 <html>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <head>
-        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
-        
-        <link rel="stylesheet" type="text/css" href="./assets/common/css/latex.css">     
-    </head>
-    <h1>Remote 13: Source Code Visualizer</h1>
-    <body>
-        <form id="mapForm">
-            <div class = "form-group">
-            <label for="exampleInputEmail1">Please put in your team map key</label>
-            <input class="form-control" id="mapKey" aria-describedby="mapHelp" placeholder="Enter Map Key">
-            <button type="submit" class="btn btn-primary">Display Map</button>
-            </div>        
-        </form>
-        <script src="./assets/common/js/index.js"></script>
+  <head>
+    <meta charset="UTF-8">
+    <title>ChartGraphix</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
+    <script src="./assets/common/js/config.js"></script>
+    <script src="./assets/common/js/common.js"></script>
+    <link href="./assets/common/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
-        <pre id="tree">
-            <!--Tree!-->
-        </pre>
-        <script>initializeEventListener();</script>
-    </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div id="container">
+      <!-- Webpage header -->
+      <div id="header"> 
+        <h1>ChartGraphix</h1> 
+      </div>
+      <div id="loading">Loading...</div>
+
+      <div id="loaded" class="hidden">
+        <div id="main">
+
+          <!-- UI when signed in -->
+          <div id="user-signed-in" class="hidden">
+
+            <!-- User profile -->
+            <div id="user-info">
+              <h3>This is the user profile</h3>
+              <div id="photo-container">
+                <img id="photo">
+              </div>
+              <div id="name"></div>
+              <div id="email"></div>
+              <div id="phone"></div>
+              <div id="is-new-user"></div>
+              <div class="clearfix"></div>
+              <p>
+                <button id="sign-out">Sign Out</button>
+                <button id="delete-account">Delete account</button>
+              </p>
+            </div>
+            <!-- Visualization UI -->
+            <form id="mapForm">
+              <div class = "form-group">
+                <label for="exampleInputEmail1">Please put in your team map key</label>
+                <input class="form-control" id="mapKey" aria-describedby="mapHelp" placeholder="Enter Map Key">
+                <button type="submit" class="btn btn-primary">Display Map</button>
+              </div>        
+            </form>
+            <pre id="tree">
+              <!--Tree!-->
+            </pre>
+          </div>
+
+          <!-- UI when not signed in -->
+          <div id="user-signed-out" class="hidden">
+            <h4>Welcome to ChartGraphX. Please sign in to continue:</h4>
+            <div id="firebaseui-spa">
+              <div id="firebaseui-container"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="./assets/common/js/app.js"></script>
+    <script src="./assets/common/js/tree.js"></script>
+  </body>
 </html>
