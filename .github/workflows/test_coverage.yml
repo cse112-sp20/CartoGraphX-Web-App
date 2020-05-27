@@ -1,0 +1,24 @@
+# Runs test coverage and uploads to Codecov
+
+name: Test coverage
+on: push
+
+jobs:
+    testcov:
+        runs-on: ubuntu-latest
+        steps:
+        -   name: Checkout 
+            uses: actions/checkout@master
+        -   name: Setup Node.js
+            uses: actions/setup-node@v1
+            with:
+                node-version: 12
+        -   name: Install dependencies
+            run: npm install
+        -   name: Run nyc
+            run: npx nyc --reporter=clover --reporter=text mocha 'unit_tests/**/*.test.js'
+        -   uses: codecov/codecov-action@v1
+            with:
+                token: ${{ secrets.CODECOV_TOKEN }}
+                file: ./coverage/*
+                flags: unittests
