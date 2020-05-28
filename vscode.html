@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <head>
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
+    </head>
+    <h1>Remote 13: Source Code Visualizer</h1>
+    <body>
+        <form id="mapForm">
+            <div class = "form-group">
+            <label for="mapId">Please put in your team map key</label>
+            <input class="form-control" id="mapKey" aria-describedby="mapHelp" placeholder="Enter Map Key">
+            <button id="mapButton" type="button" class="btn btn-primary">Display Map</button>
+            </div>        
+        </form>
+        <script>
+            let directoryTree      = {};
+            let fileKeyToNameMap   = {};
+            let editorToFileKeyMap = {};
+            const DIRECTORY_TREE  = '/directory_trees/';
+            const TEAM_MAP        = '/team_maps/';
+            const CURRENT_EDITORS = '/current_editors/';
+            const FILE            = '/files/';
+            const USER            = '/users/';
+            const MS_PER_REFRESH = 500;
+            let firstTreePrint = true;
+            let editorsChanged = false;
+            let directoryStructureChanged = false;
+            let subscribedToEditorChanges = false;
+            
+            document.getElementById("mapButton").addEventListener('click', (e) => {
+                console.log("getMapKey has been called!");
+                let mapK = document.getElementById("mapKey").value;
+                createTree(mapK);
+            });
+            
+            function createTree(teamMapKey){
+              let firebaseConfig = {
+                  apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
+                  authDomain: "remote-13.firebaseapp.com",
+                  databaseURL: "https://remote-13.firebaseio.com",
+                  projectId: "remote-13",
+                  storageBucket: "remote-13.appspot.com",
+                  messagingSenderId: "113160307201",
+                  appId: "1:113160307201:web:fc2dda4c33c5d2ce4ff600",
+                  measurementId: "G-3F5MRDS2LK"
+              };
+              firebase.initializeApp(firebaseConfig);
+              firebase.analytics();
+              dbAccess = firebase.database();
+              subscribeToChanges(TEAM_MAP, teamMapKey, (snap) => {
+                editorToFileKeyMap = snap.val()["current_editors"];
+                directoryTreeKey   = snap.val()["rootFolder"];
+                editorsChanged  = true;
+                if(subscribedToEditorChanges){
+                  return;
+                }
+                subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async snap => {
+                  subscribedToEditorChanges = true;
+                  directoryTree = snap.val();
+                  directoryStructureChanged = true;
+                  generateFileKeyToNameMap();
+                  if(firstTreePrint){
+                    displayDirectoryTree();
+                    firstTreePrint            = false;
+                    directoryStructureChanged = false;
+                    editorsChanged            = false;
+                    setInterval(() => { 
+                      if(editorsChanged || directoryStructureChanged){
+                        displayDirectoryTree(); 
+                        editorsChanged            = false;
+                        directoryStructureChanged = false;
+                      }
+                    }, MS_PER_REFRESH);
+                  }
+                });
+              });
+            }
+            
+            function getEntrySnapshotWithKey(type, key){
+              return dbAccess.ref(type + key).once('value');
+            }
+            
+            function subscribeToChanges(type, key, func){
+              return dbAccess.ref(type + key).on('value', func);
+            }
+            
+            function generateFileKeyToNameMap(){
+              let toSearch    = [directoryTree];
+              let fileKeyList = [];
+              while(!(toSearch.length == 0)){
+                subDir = toSearch.pop();
+                for(let file in subDir){
+                  if(fileKeyToNameMap.hasOwnProperty(subDir[file]) && fileKeyToNameMap[subDir[file]] == file){
+                    continue;
+                  }
+                  if(typeof(subDir[file]) == 'string'){
+                    fileKeyToNameMap[subDir[file]] = file.split(',').join('.');
+                  } else {
+                    toSearch.push(subDir[file]);
+                  }
+                }
+              }
+            }
+            
+            function displayDirectoryTree(){
+              const preField = document.getElementById('tree');
+              str = generateSourceTree(directoryTree);
+              preField.innerHTML = str;
+            }
+            
+            function generateSourceTree(dir){
+                let formattedString = "";
+                for(topLevelFile in dir){
+                  if(typeof(dir[topLevelFile]) === 'string'){
+                    formattedString += topLevelFile + "\n";
+                  } else {
+                    formattedString += topLevelFile + "\n";
+                    formattedString += generateSourceTreeRec(dir[topLevelFile], "");
+                  }
+                }
+                return formattedString;
+            }
+            
+            function generateSourceTreeRec(file, parentPrefix){
+                let PREFIXES = [[" ├─ ", " │  " ], [" └─ ", "    "]];
+                let directoryStructure = Object.entries(Object.entries(file));
+                let formattedString = "";
+                for (const [index, [key, value]] of directoryStructure) {
+                    let currentPrefix;
+                    if(isLastElementInArray(directoryStructure, index)){
+                        currentPrefix = PREFIXES[1];
+                    } else {
+                        currentPrefix = PREFIXES[0];
+                    }
+                    if(typeof(value) === 'string'){
+                      formattedString += parentPrefix + currentPrefix[0] + fileKeyToNameMap[value] + " " +  listEditorsOf(value) + "\n";
+                    } else {
+                      formattedString += parentPrefix + currentPrefix[0] + key.split(",").join(".")  + "\n";
+                      formattedString += generateSourceTreeRec(value, parentPrefix + currentPrefix[1]);
+                    }
+                }
+                return formattedString;
+            }
+            
+            function listEditorsOf(fileKey){
+              let str = '(';
+              let fileHadEntry = false;
+              for(let editorName in editorToFileKeyMap){
+                if(editorToFileKeyMap[editorName] == fileKey){
+                  str += colorText(editorName, "red") + ", ";
+                  fileHadEntry = true;
+                }
+              }
+              str += ')';
+              if(fileHadEntry){
+                return str.substring(0, str.length - 3) + ")";
+              } else {
+                return "";
+              }
+            }
+            
+            function colorText(text, color){
+              return '<span style="color:' + color + '">' + text + "</span>";
+            }
+            
+            function isLastElementInArray(arr, index){
+                return index == (arr.length - 1);
+            }
+        </script>
+
+        <pre id="tree">
+        </pre>
+    </body>
+</html>
