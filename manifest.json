@@ -1,11 +1,11 @@
 {
-    "name": "CharyGraphX",
+    "name": "CartoGraphX",
     "short_name": "CGphX",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#fff",
     "lang": "en-US",
-    "description": "ChartGraphX provides a way for your remote team to visualize the work of each team member. Visualization is aimed to make people understand the entire scope of their project and see what part of the project their team members are working on.",
+    "description": "CartoGraphX provides a way for your remote team to visualize the work of each team member. Visualization is aimed to make people understand the entire scope of their project and see what part of the project their team members are working on.",
     "prefer_related_applications": false,
     "theme_color": "#fff",
     "scope": "/",
