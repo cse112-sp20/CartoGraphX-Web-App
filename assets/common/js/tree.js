@@ -12,7 +12,7 @@
 
 let directoryTree      = {}; // Actual directory structure
 let fileKeyToNameMap   = {}; // fileKey -> fileName
-let editorToFileKeyMap = {}; // editor  -> what file are the editing?
+let editorToFileKeyMap = {}; // editor  -> what file are they editing?
 
 // DIRECTORY ACCESS CONSTANTS.
 const DIRECTORY_TREE  = '/directory_trees/'
@@ -30,11 +30,11 @@ let editorsChanged = false;
 
 // Only update the tree on these
 let directoryStructureChanged = false;
-let subscribedToEditorChanges = false;
+let subscribedToDirectoryTreeChanges = false;
 
 /**
- *  Called after webpage loads. Initializes our database access,
- *  and currently displays a demo tree.
+ *  Create the tree described the team map and subscribe to changes
+ *  to the tree.
  * 
  * @param {string} teamMapKey The firebase identification key for the map.
  */
@@ -48,17 +48,18 @@ const createTree = (teamMapKey) => {
     directoryTreeKey   = snap.val()["rootFolder"];
 
     editorsChanged  = true;
-
     
-    if(subscribedToEditorChanges){
-      // If we have already subscribed to the directory tree using the information, 
-      // in team_map then we don't have any more work to do.
+    if(subscribedToDirectoryTreeChanges){
+      // If we have already subscribed below, then we don't need to run
+      // the section again. The method below will be automatically called
+      // when the directory tree structure is edited.
       return;
     }
 
-    // Once we have loaded the team_map info, load the directory tree.
+    // Once we have subscribed to the team map info, also subscribe to changes
+    // in the directory tree structure.
     subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async (snap) => {
-      subscribedToEditorChanges = true;
+      subscribedToDirectoryTreeChanges = true;
       
       // Update tree structure.
       directoryTree = snap.val();
@@ -85,18 +86,6 @@ const createTree = (teamMapKey) => {
       }
     });
   });
-}
-
-/**
- * Use with the defined constants for easy and clean one time
- * access to our database elements.
- * 
- * @param   {string}  Directory of the database you're reading.
- * @param   {string}  Key of the directory you're reading.
- * @returns {promise} Eventually becomes the value you requested.
- */
-const getEntrySnapshotWithKey = (type, key) => {
-  return dbAccess.ref(type + key).once('value');
 }
 
 /**
@@ -272,7 +261,7 @@ const setEditorToFileKeyMap = (newMap) => {
 }
 
 
-testObject = {}
+testObject                             = {}
 testObject["setDirectoryTree"]         = setDirectoryStructure;
 testObject["generateSourceTree"]       = generateSourceTree;
 testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
