@@ -1,5 +1,5 @@
 var assert = require('assert');
-require("../assets/common/js/index");
+require("../assets/common/js/tree");
 
 
 /**

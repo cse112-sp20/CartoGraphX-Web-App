@@ -1,6 +1,6 @@
 {
-  "name": "cartographx-web-app-mvp",
-  "version": "0.0.1",
+  "name": "chartgraphx-web-app-mvp",
+  "version": "1.0.0",
   "description": "Displays development metrics from VS Code in an interactive and visual format",
   "main": "index.js",
   "scripts": {
@@ -60,5 +60,6 @@
       "@semantic-release/release-notes-generator",
       "@semantic-release/npm"
     ]
-  }
+  },
+  "dependencies": {}
 }
