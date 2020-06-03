@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cse112-sp20/ChartGraphX-Web-app-MVP.git"
+    "url": "git+https://github.com/cse112-sp20/CartoGraphX-Web-app.git"
   },
   "author": "remote13",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cse112-sp20/ChartGraphX-Web-app-MVP/issues"
+    "url": "https://github.com/cse112-sp20/CartoGraphX-Web-app/issues"
   },
-  "homepage": "https://github.com/cse112-sp20/ChartGraphX-Web-app-MVP#readme",
+  "homepage": "https://github.com/cse112-sp20/CartoGraphX-Web-app#readme",
   "devDependencies": {
     "chromedriver": "^81.0.0",
     "mocha": "^7.1.2",

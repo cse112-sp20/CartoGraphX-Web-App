@@ -1,4 +1,4 @@
-# ChartxGraphX MVP (aka Mini Project 2)
+# CartoGraphX MVP (aka Mini Project 2)
 
 ## Useful commands
 Use `npm install` to install/update packages locally
@@ -7,7 +7,7 @@ Use `npm run e2e-test` to run all the nightwatch tests in the e2e_tests director
 
 ## Planned layout
 
-![webpagege view](/readme.img/ChartGraphX_web_view.png)
+![webpagege view](/readme.img/CartoGraphX_web_view.png)
 
 #### The website need to have following function:
   - Display the file structure in real time as people create file
