@@ -2,68 +2,141 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>ChartGraphix</title>
+    <title>CartoGraphX</title>
     <link rel="manifest" href="manifest.json">
     <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
     <script src="./assets/common/js/config.js"></script>
     <link href="./assets/common/css/style.css" rel="stylesheet" type="text/css" media="screen" />
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
     <div id="container">
       <!-- Webpage header -->
       <div id="header"> 
-        <h1>ChartGraphix</h1> 
+          <div id="logo">
+            <img src="./assets/common/img/logo_outline.png" width="60px" height="60px"/>
+            <h3>CartoGraphX</h3> 
+          </div> 
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+
+          <div class="nav">
+            <div class="nav-item" id="mapManagePage"></div>
+            <div class="nav-item" id="userPage"></div>
+          </div>
       </div>
+
       <div id="loading">Loading...</div>
 
       <div id="loaded" class="hidden">
         <div id="main">
 
-          <!-- UI when signed in -->
+          <!--
+          UI when signed in
+          -->
+
           <div id="user-signed-in" class="hidden">
 
             <!-- User profile -->
-            <div id="user-info">
-              <h3>This is the user profile</h3>
-              <div id="photo-container">
-                <img id="photo">
+            <div id="user-profile" class="hidden">
+
+              <div id="profile-arrow">
+                <i class="fas fa-caret-up"></i>
               </div>
-              <div id="name"></div>
-              <div id="email"></div>
-              <div id="phone"></div>
-              <div id="is-new-user"></div>
+
+              <div id="user-name">Signed in as<div id="name"></div></div>
+              <div id="user-info"> 
+                <div id="email"></div>
+                <div id="phone"></div>
+              </div>
               <div class="clearfix"></div>
               <p>
                 <button id="sign-out">Sign Out</button>
                 <button id="delete-account">Delete account</button>
               </p>
+              <!-- info to new users-->
+              <div id="new-user-info" class="hidden"> 
+                <div id="is-new-user"></div>
+                <div id="new-user-link"></div>
+              </div>
             </div>
             <!-- Visualization UI -->
-            <form id="mapForm">
-              <div class = "form-group">
-                <label for="exampleInputEmail1">Please put in your team map key</label>
-                <input class="form-control" id="mapKey" aria-describedby="mapHelp" placeholder="Enter Map Key">
-                <button type="submit" class="btn btn-primary">Display Map</button>
-              </div>        
-            </form>
-            <pre id="tree">
-              <!--Tree!-->
-            </pre>
+            <div id="map-container">
+              <div id="map">
+
+                <h1 id="tree-name">Dummy Map Name</h1>
+                <pre id="tree">
+                  <!--Tree!-->
+                </pre>
+
+              </div>
+            </div>
+
+            <div id="mapmanage-container" class="hidden">
+              <div id="manage-close-button">
+                <i class="fas fa-times"></i>
+              </div>
+              <h1>My Maps</h1>
+              <ul id="team-maps">
+                <!-- TODO fetch and display curren user's maps-->
+              </ul>
+
+              <form id="mapForm">
+                <div class = "form-group">
+                  <label for="exampleInputEmail1">Add new team map</label>
+                  <input class="form-control" id="mapKey" aria-describedby="mapHelp" placeholder="Enter Map Key">
+                  <button type="submit">Add Map</button>
+                </div>        
+              </form>
+            </div>
+
           </div>
 
-          <!-- UI when not signed in -->
+
+          <!-- 
+          UI when not signed in 
+          -->
           <div id="user-signed-out" class="hidden">
-            <h4>Welcome to ChartGraphX. Please sign in to continue:</h4>
-            <div id="firebaseui-spa">
-              <div id="firebaseui-container"></div>
+            <!-- Welcome UI -->
+            <div id="welcome">
+              <div id="welcome-info">
+                <h1>Welcome to </br>CartoGraphX!</h1>
+                <img src="./assets/common/img/logo_green.png" width="20%"/>
+              </div>
+              <button id="large-sign-button">SIGN IN / REGISTER</button>
+              <div id="firebaseui-spa" class="hidden">
+                <div id="firebaseui-container"></div>
+              </div>
             </div>
+            <!-- CartoGraphX Extension UI -->  
+            <div id="extension">
+              <img src="./assets/common/img/extension_proto.png" width="50%"/>
+              <a id="extension-link" href="https://marketplace.visualstudio.com/items?itemName=remote13.extension" target="_blank">Get the CartoGraphX VS Code extension!</a>
+            </div>
+            <!-- About CartoGraphX UI-->
+            <div id="about">
+              <h1>How it works</h1>
+                <div id="about-text-container">
+                  <div id="about-text">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                  </div>
+                </div>
+            </div>
+
           </div>
 
         </div>
+      </div>
+
+      <!-- TODO add footer-->
+      <div id="footer">
+        <h3>CartoGraphX</h3> 
+        <p>@2020 Remote13, Inc</p>
       </div>
     </div>
     <script src="./assets/common/js/app.js"></script>
