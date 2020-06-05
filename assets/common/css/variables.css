@@ -1,0 +1,28 @@
+/* Global variables to be used throughout the webapp */
+@font-face {
+    font-family: MSR900;
+    src: url(../fonts/Graphik-400-Regular.otf);
+}
+
+:root {
+    /* Colors */
+    --color-brand-100: #426a94;
+    --color-brand-200: #ff6633;
+    --color-brand-300: #DDD;
+    --color-brand-400: #31a894;
+    --color-dark-100: #2d3b49;
+    --color-dark-200: #ce542c;
+    --color-light-100: #eff6fd;
+
+  
+    /* Fonts */
+    --font-family: MSR900;
+    --font-size-base: 13pt;
+  
+  
+    /* Global sizes*/
+    --size-header-height: 100px;
+    --size-footer-height: 120px;
+    --size-form-height: 35px;
+    --size-border-radius: 6px;
+  }
