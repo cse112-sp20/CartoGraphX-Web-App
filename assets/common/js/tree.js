@@ -246,7 +246,11 @@ const colorText = (text, color) => {
  * @returns {boolean} True if it is the last index.
  */
 const isLastElementInArray = (arr, index) => {
+  if (arr.length != 0) {
     return index == (arr.length - 1);
+  } else {
+    return index == arr.length;
+  }
 }
 
 
@@ -266,3 +270,10 @@ testObject["setDirectoryTree"]         = setDirectoryStructure;
 testObject["generateSourceTree"]       = generateSourceTree;
 testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
 testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;
+testObject["listEditorsOf"]            = listEditorsOf;
+testObject["colorText"]                = colorText;
+testObject["generateSourceTreeRec"]    = generateSourceTreeRec;
+testObject["isLastElementInArray"]     = isLastElementInArray;
+testObject["directoryTree"]            = directoryTree;
+testObject["fileKeyToNameMap"]         = fileKeyToNameMap;
+testObject["editorToFileKeyMap"]       = editorToFileKeyMap;
