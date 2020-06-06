@@ -4,11 +4,6 @@
  *  @author       Alistair Knox
  *
  */
-import {} from 'assets/common/js/Tree.js';
-
-/*
-* 
-*/
 
 
 var map = L.map('mapid', {
