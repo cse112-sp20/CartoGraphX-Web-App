@@ -38,7 +38,7 @@ let subscribedToDirectoryTreeChanges = false;
  * 
  * @param {string} teamMapKey The firebase identification key for the map.
  */
-const createTree = (teamMapKey) => {
+const createTree = (teamMapKey, fileList) => {
   // Reference used to read from database.
   dbAccess = firebase.database();
 
@@ -66,7 +66,7 @@ const createTree = (teamMapKey) => {
       directoryStructureChanged = true;
 
       // Find new files.
-      generateFileKeyToNameMap();
+      generateFileKeyToNameMap(fileList);
 
       // Only run this once to get our tree displayed / refreshing.
       if(firstTreePrint){
@@ -74,7 +74,7 @@ const createTree = (teamMapKey) => {
         firstTreePrint            = false;
         directoryStructureChanged = false;
         editorsChanged            = false;
-
+        
         // Once we have loaded all the necessary information, 
         setInterval(() => { 
           if(editorsChanged || directoryStructureChanged){
@@ -105,10 +105,11 @@ const subscribeToChanges = (type, key, func) => {
  * Helper function of initializeDirectoryTree. Generates a fileKey -> editor
  * map so that we can get editors names while displaying the tree.
  */
-const generateFileKeyToNameMap = () => {
+const generateFileKeyToNameMap = (testObject) => {
   let toSearch    = [directoryTree];
   let fileKeyList = [];
 
+  console.log('gen');
   // Find the non-directory files.
   while(!(toSearch.length == 0)){
     subDir = toSearch.pop();
@@ -120,11 +121,13 @@ const generateFileKeyToNameMap = () => {
 
       if(typeof(subDir[file]) == 'string'){
         fileKeyToNameMap[subDir[file]] = file.split(',').join('.');
+        testObject.push(file.split(',').join('.')); 
       } else {
         toSearch.push(subDir[file]);
       }
     }
   }
+
 }
 
 /**
@@ -264,16 +267,19 @@ const setEditorToFileKeyMap = (newMap) => {
   editorToFileKeyMap = newMap;
 }
 
+        // testObject                             = {};
+        // testObject["fileKeyToNameMap"]         = fileKeyToNameMap;
+        // testObject["fileKeyToNameMap"]         = fileKeyToNameMap;
+        // testObject["setDirectoryTree"]         = setDirectoryStructure;
+        // testObject["generateSourceTree"]       = generateSourceTree;
+        // testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
+        // testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;
+        // testObject["listEditorsOf"]            = listEditorsOf;
+        // testObject["colorText"]                = colorText;
+        // testObject["generateSourceTreeRec"]    = generateSourceTreeRec;
+        // testObject["isLastElementInArray"]     = isLastElementInArray;
+        // testObject["directoryTree"]            = directoryTree;
+        // testObject["editorToFileKeyMap"]       = editorToFileKeyMap;
 
-testObject                             = {}
-testObject["setDirectoryTree"]         = setDirectoryStructure;
-testObject["generateSourceTree"]       = generateSourceTree;
-testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
-testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;
-testObject["listEditorsOf"]            = listEditorsOf;
-testObject["colorText"]                = colorText;
-testObject["generateSourceTreeRec"]    = generateSourceTreeRec;
-testObject["isLastElementInArray"]     = isLastElementInArray;
-testObject["directoryTree"]            = directoryTree;
-testObject["fileKeyToNameMap"]         = fileKeyToNameMap;
-testObject["editorToFileKeyMap"]       = editorToFileKeyMap;
+
+

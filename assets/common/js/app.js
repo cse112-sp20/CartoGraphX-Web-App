@@ -5,6 +5,9 @@
 /**
  * @return {!Object} The FirebaseUI config.
  */
+
+let fileList = [];
+
 const getUiConfig = () => {
     return {
       'callbacks': {
@@ -63,8 +66,7 @@ const getUiConfig = () => {
     document.getElementById('mapManagePage').textContent = "Manage Maps";
 
     //load dummy tree
-    createTree("-M8S1dRRYzEbFIZBMaiR");
-  
+    createTree("-M8S1dRRYzEbFIZBMaiR", fileList);
   };
   
   

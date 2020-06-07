@@ -5,7 +5,6 @@
  *
  */
 
-
 var map = L.map('mapid', {
     crs: L.CRS.Simple,
     minZoom: 0,
@@ -21,8 +20,7 @@ var image = L.imageOverlay('img/honeycomb-grey-5120x2880.png', bounds, {
     opacity: 0.8,
 }).addTo(map);
 // map.setMaxBounds(bounds);
-map.setView( [140, 170], 1);
-
+// map.setView( [140, 170], 1);
 map.fitBounds(bounds);
 
 /*
@@ -51,6 +49,23 @@ function addFilesToMap(files) {
     }
 }
 
+/*
+ * @param files - Object of file keys : names to add
+ */
+function filesToMap(keysToNames) {
+    for (let e of keysToNames) {
+        console.log(e);
+        let x_coord = (Math.random()*boundX) % 1000;
+        let y_coord = (Math.random()*boundY) % 600;
+        L.circle([y_coord, x_coord], {
+            color: 'red',
+            fillOpacity: 0.5,
+            radius: 30,
+        }).addTo(map).bindPopup(keysToNames[e].toString()).bindTooltip(keysToNames[e].toString(),
+        {permanent: true, direction:"center"}
+       ).openTooltip();
+    }
+}
 
 var circle = L.circle([250, 500], {
     color: 'red',
@@ -86,5 +101,20 @@ testfiles = { "test.js":100,
               "test6.js":600,
 }
 
-addFilesToMap(testfiles);
 
+
+// TEST CODE
+
+let keymap = fileList;
+console.log(keymap)
+
+// console.log(keymap)
+// filesToMap(keymap)
+
+
+
+console.log(Symbol.iterator in Object((keymap)))
+
+
+// console.log(fileKeyToNameMap);
+  
