@@ -41,6 +41,7 @@ let intervalID        = undefined;
  *  to the tree.
  * 
  * @param {string} teamMapKey The firebase identification key for the map.
+ * @param {firebase ref} firebase The firebase reference used to access our database.
  */
 const createTree = (teamMapKey, firebase) => {
   // Reference used to read from database.
