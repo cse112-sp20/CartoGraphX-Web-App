@@ -24,6 +24,9 @@ h1, h2, h3, h4, h5, h6 {
 ul {
   list-style: disc;
 }
+li{
+  margin-top: 1rem;
+}
 
 h1:first-child {
   text-align: center;
@@ -95,7 +98,7 @@ button:focus {
 
 #large-sign-button{
   height: 60px;
-  font-size: 15px;
+  font-size: var(--font-size-base);
   background-color: var(--color-brand-200);
   border-color: var(--color-brand-200);
 }
@@ -118,7 +121,7 @@ button:focus {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 40px; 
+  font-size: var(--font-size-xxlarge); 
 }
 
 #firebaseui-spa{
@@ -135,6 +138,7 @@ button:focus {
   flex-direction: column;
   align-items: center;
   padding-bottom: 4rem;
+  margin-bottom: 4rem;
   border-radius: calc(2 * var(--size-border-radius));
 
   -webkit-box-shadow: 10px 9px 25px -11px rgba(0,0,0,0.37);
@@ -143,7 +147,7 @@ button:focus {
 }
 #extension-link{
   margin-top: 2rem;
-  font-size: x-large;
+  font-size: var(--font-size-large);
 }
 
 #about{
@@ -152,11 +156,24 @@ button:focus {
   justify-content: center;
   align-items: center;
   color: black;
+  margin-bottom: 4rem;
+}
+#about-header{
+  font-size: var(--font-size-xxlarge);
+  font-weight: bold;
+  margin-bottom: 2rem;
 }
 #about-text{
   width: 60%;
+  font-size: var(--font-size-base);
+  padding-bottom: 4rem;
 }
-
+#about-text h3{
+  font-size: var(--font-size-xlarge);
+}
+#about-text-entry{
+  margin-bottom: 3rem;;
+}
 #about-text-container{
   width: 90vw;
   background-color: white;
