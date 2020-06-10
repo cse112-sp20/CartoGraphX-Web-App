@@ -61,5 +61,7 @@
       "@semantic-release/npm"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "firebase": "^7.15.0"
+  }
 }
