@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: tree.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: tree.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** 
+ *  @fileOverview Implements a basic source code visualizer.
+ *
+ *  @author       Jackson Tuxhorn
+ *
+ *  @requires     NPM:npm_module_1
+ *  @requires     BOWER:bower_module_1
+ *  @requires     EXTERNAL:@link{https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js firebase}
+ *  @requires     EXTERNAL:@link{https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js analytics}
+ *  @requires     EXTERNAL:@link{https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js database}
+ */
+
+let directoryTree      = {}; // Actual directory structure
+let fileKeyToNameMap   = {}; // fileKey -> fileName
+let editorToFileKeyMap = {}; // editor  -> what file are they editing?
+
+// DIRECTORY ACCESS CONSTANTS.
+const DIRECTORY_TREE  = '/directory_trees/'
+const TEAM_MAP        = '/team_maps/';
+const CURRENT_EDITORS = '/current_editors/'
+const FILE            = '/files/';
+const USER            = '/users/';
+
+// REFRESH RATE
+const SECONDS_PER_REFRESH = 2;
+
+// Make sure we don't repeat key steps that must be done once.
+let firstTreePrint = true;
+let editorsChanged = false;
+
+// Only update the tree on these
+let directoryStructureChanged = false;
+let subscribedToDirectoryTreeChanges = false;
+
+/**
+ *  Create the tree described the team map and subscribe to changes
+ *  to the tree.
+ * 
+ * @param {string} teamMapKey The firebase identification key for the map.
+ */
+const createTree = (teamMapKey) => {
+  // Reference used to read from database.
+  dbAccess = firebase.database();
+
+  // Subscribe to team_map current_editors
+  subscribeToChanges(TEAM_MAP, teamMapKey, (snap) => {
+    editorToFileKeyMap = snap.val()["current_editors"];
+    directoryTreeKey   = snap.val()["rootFolder"];
+
+    editorsChanged  = true;
+    
+    if(subscribedToDirectoryTreeChanges){
+      // If we have already subscribed below, then we don't need to run
+      // the section again. The method below will be automatically called
+      // when the directory tree structure is edited.
+      return;
+    }
+
+    // Once we have subscribed to the team map info, also subscribe to changes
+    // in the directory tree structure.
+    subscribeToChanges(DIRECTORY_TREE, directoryTreeKey, async (snap) => {
+      subscribedToDirectoryTreeChanges = true;
+      
+      // Update tree structure.
+      directoryTree = snap.val();
+      directoryStructureChanged = true;
+
+      // Find new files.
+      generateFileKeyToNameMap();
+
+      // Only run this once to get our tree displayed / refreshing.
+      if(firstTreePrint){
+        displayDirectoryTree();
+        firstTreePrint            = false;
+        directoryStructureChanged = false;
+        editorsChanged            = false;
+
+        // Once we have loaded all the necessary information, 
+        setInterval(() => { 
+          if(editorsChanged || directoryStructureChanged){
+            displayDirectoryTree(); 
+            editorsChanged            = false;
+            directoryStructureChanged = false;
+          }
+        }, SECONDS_PER_REFRESH * 1000);
+      }
+    });
+  });
+}
+
+/**
+ * Use with the defined constants for easy and clean subscription
+ * to a database element.
+ * 
+ * @param   {string}   Directory of the database you're reading.
+ * @param   {string}   Key of the directory you're reading.
+ * @param   {function} callback function for a change.
+ * @returns {promise}  Eventually becomes the value you requested.
+ */
+const subscribeToChanges = (type, key, func) => {
+  return dbAccess.ref(type + key).on('value', func);
+}
+
+/**
+ * Helper function of initializeDirectoryTree. Generates a fileKey -> editor
+ * map so that we can get editors names while displaying the tree.
+ */
+const generateFileKeyToNameMap = () => {
+  let toSearch    = [directoryTree];
+  let fileKeyList = [];
+
+  // Find the non-directory files.
+  while(!(toSearch.length == 0)){
+    subDir = toSearch.pop();
+    for(let file in subDir){
+      if(fileKeyToNameMap.hasOwnProperty(subDir[file]) &amp;&amp; fileKeyToNameMap[subDir[file]] == file){
+        // We already know about this file, and it hasn't been renamed.
+        continue;
+      }
+
+      if(typeof(subDir[file]) == 'string'){
+        fileKeyToNameMap[subDir[file]] = file.split(',').join('.');
+      } else {
+        toSearch.push(subDir[file]);
+      }
+    }
+  }
+}
+
+/**
+ * Updates the HTML pre to display the current tree.
+ */
+const displayDirectoryTree = () => {
+  const preField = document.getElementById('tree');
+
+  str = generateSourceTree(directoryTree)
+  preField.innerHTML = str;
+}
+
+// Various parts of the following code to print the directory tree structure are 
+// based on the following StackOverflow response: https://stackoverflow.com/a/43105321
+
+/**
+ * Print the source graph of the JSON dir.
+ * 
+ * @param   {function} callback function for a change.
+ * @returns {promise}  Eventually becomes the value you requested.
+ */
+const generateSourceTree = (dir) => {
+    let formattedString = "";
+
+    for(topLevelFile in dir){
+      if(typeof(dir[topLevelFile]) === 'string'){
+        formattedString += topLevelFile + "\n";
+      } else {
+        formattedString += topLevelFile + "\n";
+        formattedString += generateSourceTreeRec(dir[topLevelFile], "");
+      }
+    }
+
+    return formattedString;
+}
+
+/**
+ * Generates the code graph from the current file, and prepends the
+ * filename with a parentPrefix.
+ * 
+ * @param   {object}  JSON representation of directory.
+ * @param   {string}  prefix to prepend this line with.
+ * @returns {promise} Eventually becomes the value you requested.
+ */
+const generateSourceTreeRec = (file, parentPrefix) => {
+    let PREFIXES = [[" ├─ ", " │  " ], [" └─ ", "    "]]
+    let directoryStructure = Object.entries(Object.entries(file));
+    let formattedString = "";
+
+    // From https://stackoverflow.com/a/45254514
+    for (const [index, [key, value]] of directoryStructure) {
+        let currentPrefix;
+
+        // If last element, use terminating prefixes.
+        if(isLastElementInArray(directoryStructure, index)){
+            currentPrefix = PREFIXES[1];
+        } else {
+            currentPrefix = PREFIXES[0];
+        }
+
+        // Base case: This is a filekey. 
+        if(typeof(value) === 'string'){
+          formattedString += parentPrefix + currentPrefix[0] + fileKeyToNameMap[value] + " " +  listEditorsOf(value) + "\n";
+        } else {
+          formattedString += parentPrefix + currentPrefix[0] + key.split(",").join(".")  + "\n";
+          formattedString += generateSourceTreeRec(value, parentPrefix + currentPrefix[1]);
+        }
+    }
+
+    return formattedString;
+}
+
+/**
+ * Check if the file with this key is being edited by anyone.
+ * 
+ * @param   {string} File key to format an editor string for.
+ * @returns {string} Formatted list of editors for the file.
+ */
+const listEditorsOf = (fileKey) => {
+  let str = '(';
+  let fileHadEntry = false;
+
+  for(let editorName in editorToFileKeyMap){
+    if(editorToFileKeyMap[editorName] == fileKey){
+      str += colorText(editorName, "red") + ", ";
+      fileHadEntry = true;
+    }
+  }
+
+  str += ')';
+
+  if(fileHadEntry){
+    // This is ugly. It just chops the last bit off and adds a paren
+    // since we can't really check how many editors there will be 
+    // when forming the list.
+    return str.substring(0, str.length - 3) + ")";
+  } else {
+    // Otherwise it's empty and just prints ()
+    return "";
+  }
+  
+}
+
+/**
+ * Uses inline style to give color to a span of text.
+ * 
+ * @param {string} color color to give an html span
+ * @param {*} text text to give color
+ */
+const colorText = (text, color) => {
+  return '&lt;span style="color:' + color + '">' + text + "&lt;/span>";
+}
+
+/**
+ * Checks if this index is the last.
+ * 
+ * @param   {Array}     an array
+ * @param   {number} an index
+ * @returns {boolean} True if it is the last index.
+ */
+const isLastElementInArray = (arr, index) => {
+    return index == (arr.length - 1);
+}
+
+
+// TEST CODE
+
+const setDirectoryStructure = (newMap) => {
+  directoryTree = newMap;
+}
+
+const setEditorToFileKeyMap = (newMap) => {
+  editorToFileKeyMap = newMap;
+}
+
+
+testObject                             = {}
+testObject["setDirectoryTree"]         = setDirectoryStructure;
+testObject["generateSourceTree"]       = generateSourceTree;
+testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
+testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Jun 10 2020 04:58:05 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
