@@ -17,7 +17,10 @@
   
     /* Fonts */
     --font-family: MSR900;
-    --font-size-base: 13pt;
+    --font-size-base: 12pt;
+    --font-size-large: 16pt;
+    --font-size-xlarge: 22pt;
+    --font-size-xxlarge: 30pt;
   
   
     /* Global sizes*/
