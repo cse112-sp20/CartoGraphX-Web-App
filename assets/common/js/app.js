@@ -63,8 +63,7 @@ const getUiConfig = () => {
     document.getElementById('mapManagePage').textContent = "Manage Maps";
 
     //load dummy tree
-    createTree("-M8S1dRRYzEbFIZBMaiR", firebase);
-  
+    createTree("DUMMY_MAP", firebase);
   };
   
   
@@ -139,6 +138,7 @@ const getUiConfig = () => {
       e.preventDefault();
       const getMapForm = document.querySelector('#mapForm');
       let mapK = getMapForm['mapKey'].value;
+      resetTree(firebase);
       createTree(mapK, firebase);
     });
     // display firebaseUI on button click

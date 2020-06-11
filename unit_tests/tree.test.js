@@ -83,31 +83,54 @@ describe("Tree", () => {
 
   describe("#firebaseIntegration", function () { // Scoping issues require this NOT be an arrow function.
     this.timeout(5000); // Super big timeout because it's a database call.
+    
+    var config = {
+      apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
+      authDomain: "remote-13.firebaseapp.com",
+      databaseURL: "https://remote-13.firebaseio.com",
+      storageBucket: "remote-13.appspot.com",
+      messagingSenderId: "113160307201",
+      appId: "1:113160307201:web:fc2dda4c33c5d2ce4ff600",
+      measurementId: "G-3F5MRDS2LK"
+    };
+
+    firebase.initializeApp(config)
 
     it("Should contain info from database", (done) => {
-      var config = {
-        apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
-        authDomain: "remote-13.firebaseapp.com",
-        databaseURL: "https://remote-13.firebaseio.com",
-        storageBucket: "remote-13.appspot.com",
-        messagingSenderId: "113160307201",
-        appId: "1:113160307201:web:fc2dda4c33c5d2ce4ff600",
-        measurementId: "G-3F5MRDS2LK"
-      };
-  
       testObject.setCommandLineTest();
-  
-      console.log("Doing firebase test");
-  
-      firebase.initializeApp(config)
-      testObject.createTree("-M8S2yMxxr-ycZLThss4", firebase, () => {
+      
+      testObject.createTree("TEST_MAP", firebase, () => {
         assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
         assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
         assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);
 
         testObject.cancelInterval();
-        firebase.database().goOffline();
+        
         done();
+      });
+    });
+
+    it("Getting info then resetting and getting more info", (done) => {
+      testObject.resetTree(firebase);
+
+      testObject.setCommandLineTest();
+
+      testObject.createTree("TEST_MAP", firebase, () => {
+        assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
+        assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
+        assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);
+
+        testObject.resetTree();
+        testObject.setCommandLineTest();
+
+        testObject.createTree("DUMMY_MAP", firebase, () => {
+          assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
+          assert.equal((testObject.getEditorToFileKeyMap() === undefined), true);
+
+          firebase.database().goOffline();
+          testObject.cancelInterval();
+          done();
+        })
       });
     });
   });
