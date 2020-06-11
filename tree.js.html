@@ -60,13 +60,18 @@ let editorsChanged = false;
 let directoryStructureChanged = false;
 let subscribedToDirectoryTreeChanges = false;
 
+// Command Line Test
+let isCommandLineTest = false;
+let intervalID        = undefined;
+
 /**
  *  Create the tree described the team map and subscribe to changes
  *  to the tree.
  * 
  * @param {string} teamMapKey The firebase identification key for the map.
+ * @param {firebase} firebase The firebase reference used to access our database.
  */
-const createTree = (teamMapKey) => {
+const createTree = (teamMapKey, firebase) => {
   // Reference used to read from database.
   dbAccess = firebase.database();
 
@@ -104,7 +109,7 @@ const createTree = (teamMapKey) => {
         editorsChanged            = false;
 
         // Once we have loaded all the necessary information, 
-        setInterval(() => { 
+        intervalID = setInterval(() => { 
           if(editorsChanged || directoryStructureChanged){
             displayDirectoryTree(); 
             editorsChanged            = false;
@@ -159,10 +164,12 @@ const generateFileKeyToNameMap = () => {
  * Updates the HTML pre to display the current tree.
  */
 const displayDirectoryTree = () => {
-  const preField = document.getElementById('tree');
-
   str = generateSourceTree(directoryTree)
-  preField.innerHTML = str;
+
+  if(!isCommandLineTest){
+    const preField = document.getElementById('tree');
+    preField.innerHTML = str;
+  }
 }
 
 // Various parts of the following code to print the directory tree structure are 
@@ -274,26 +281,61 @@ const colorText = (text, color) => {
  * @returns {boolean} True if it is the last index.
  */
 const isLastElementInArray = (arr, index) => {
+  if (arr.length != 0) {
     return index == (arr.length - 1);
+  } else {
+    return index == arr.length;
+  }
 }
 
 
 // TEST CODE
-
 const setDirectoryStructure = (newMap) => {
+  console.log("Setting directory");
   directoryTree = newMap;
 }
 
+const getDirectoryStructure = () => {
+  return directoryTree;
+}
+
+const getEditorToFileKeyMap = () => {
+  return editorToFileKeyMap;
+}
+
+const getFileKeyToNameMap = () => {
+  return fileKeyToNameMap;
+}
 const setEditorToFileKeyMap = (newMap) => {
   editorToFileKeyMap = newMap;
 }
 
+const setCommandLineTest = () => {
+  isCommandLineTest = true;
+}
+
+const cancelInterval = () => {
+  clearInterval(intervalID);
+}
 
 testObject                             = {}
 testObject["setDirectoryTree"]         = setDirectoryStructure;
 testObject["generateSourceTree"]       = generateSourceTree;
 testObject["generateFileKeyToNameMap"] = generateFileKeyToNameMap;
-testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;</code></pre>
+testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;
+testObject["listEditorsOf"]            = listEditorsOf;
+testObject["colorText"]                = colorText;
+testObject["generateSourceTreeRec"]    = generateSourceTreeRec;
+testObject["isLastElementInArray"]     = isLastElementInArray;
+testObject["directoryTree"]            = directoryTree;
+testObject["fileKeyToNameMap"]         = fileKeyToNameMap;
+testObject["editorToFileKeyMap"]       = editorToFileKeyMap;
+testObject["createTree"]               = createTree;
+testObject["setCommandLineTest"]       = setCommandLineTest;
+testObject["getDirectoryStructure"]    = getDirectoryStructure;
+testObject["cancelInterval"]           = cancelInterval;
+testObject["getEditorToFileKeyMap"]    = getEditorToFileKeyMap;
+testObject["getFileKeyToNameMap"]      = getFileKeyToNameMap;</code></pre>
         </article>
     </section>
 
@@ -303,13 +345,13 @@ testObject["setEditorToFileKeyMap"]    = setEditorToFileKeyMap;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li><li><a href="global.html#toggleNav">toggleNav</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Jun 10 2020 05:39:04 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu Jun 11 2020 03:03:38 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
