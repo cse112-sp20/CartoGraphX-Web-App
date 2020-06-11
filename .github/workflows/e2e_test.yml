@@ -1,0 +1,22 @@
+name: E2E Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Running e2e Tests with npm
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: Install npm
+      run: npm install
+    - name: Running E2E Tests
+      run: npm run e2e-test
+    # - run: sudo ./node_modules/.bin/extest setup-tests -c 1.45.0
+    # - run: sudo chmod -R 777 ./test-resources
+    # - run: sudo ./node_modules/.bin/extest run-tests -u ./out/e2e-tests/*.test.js
