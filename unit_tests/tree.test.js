@@ -81,7 +81,9 @@ describe("Tree", () => {
     });
   });
 
-  describe("#firebaseIntegration", () => {
+  describe("#firebaseIntegration", function () { // Scoping issues require this NOT be an arrow function.
+    this.timeout(5000); // Super big timeout because it's a database call.
+
     it("Should contain info from database", (done) => {
       var config = {
         apiKey: "AIzaSyA8jCEXgEsLljtkEUg-RCgHaF6i2cag_kY",
@@ -98,9 +100,7 @@ describe("Tree", () => {
       console.log("Doing firebase test");
   
       firebase.initializeApp(config)
-      testObject.createTree("-M8S2yMxxr-ycZLThss4", firebase);
-  
-      setTimeout(() => {
+      testObject.createTree("-M8S2yMxxr-ycZLThss4", firebase, () => {
         assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
         assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
         assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);
@@ -108,7 +108,7 @@ describe("Tree", () => {
         testObject.cancelInterval();
         firebase.database().goOffline();
         done();
-      }, 500);
+      });
     });
   });
 });
