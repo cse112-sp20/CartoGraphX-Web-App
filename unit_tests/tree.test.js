@@ -99,7 +99,7 @@ describe("Tree", () => {
     it("Should contain info from database", (done) => {
       testObject.setCommandLineTest();
       
-      testObject.createTree("-M8S2yMxxr-ycZLThss4", firebase, () => {
+      testObject.createTree("TEST_MAP", firebase, () => {
         assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
         assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
         assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);
@@ -115,7 +115,7 @@ describe("Tree", () => {
 
       testObject.setCommandLineTest();
 
-      testObject.createTree("-M8S2yMxxr-ycZLThss4", firebase, () => {
+      testObject.createTree("TEST_MAP", firebase, () => {
         assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
         assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
         assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);
@@ -123,7 +123,7 @@ describe("Tree", () => {
         testObject.resetTree();
         testObject.setCommandLineTest();
 
-        testObject.createTree("-M8S1dRRYzEbFIZBMaiR", firebase, () => {
+        testObject.createTree("DUMMY_MAP", firebase, () => {
           assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
           assert.equal((testObject.getEditorToFileKeyMap() === undefined), true);
 
