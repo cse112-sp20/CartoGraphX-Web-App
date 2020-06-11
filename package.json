@@ -1,12 +1,13 @@
 {
   "name": "chartgraphx-web-app-mvp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Displays development metrics from VS Code in an interactive and visual format",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Please use 'npm run unit-test' for unit tests and 'npm run e2e-test' for e2e tests.\" && exit 0",
     "unit-test": "./node_modules/.bin/mocha 'unit_tests/**/*.test.js' ",
-    "e2e-test": "./node_modules/.bin/nightwatch"
+    "e2e-test": "./node_modules/.bin/nightwatch",
+    "doc": "./node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,7 @@
   },
   "homepage": "https://github.com/cse112-sp20/CartoGraphX-Web-app#readme",
   "devDependencies": {
-    "chromedriver": "^81.0.0",
+    "chromedriver": "^83.0.0",
     "mocha": "^7.1.2",
     "nightwatch": "^1.3.5"
   },
@@ -61,5 +62,7 @@
       "@semantic-release/npm"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "firebase": "^7.15.0"
+  }
 }

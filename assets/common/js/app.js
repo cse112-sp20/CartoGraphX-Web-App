@@ -5,7 +5,6 @@
 /**
  * @return {!Object} The FirebaseUI config.
  */
-
 const getUiConfig = () => {
   return {
     'callbacks': {
@@ -65,7 +64,6 @@ var handleSignedInUser = (user) => {
 
   //load dummy tree
   createTree("-M8S2yMxxr-ycZLThss4", firebase);
-  // createTree("-M8S1dRRYzEbFIZBMaiR", firebase);
 };
 
 
