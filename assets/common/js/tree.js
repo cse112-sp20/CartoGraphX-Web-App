@@ -32,6 +32,9 @@ let editorsChanged = false;
 let directoryStructureChanged = false;
 let subscribedToDirectoryTreeChanges = false;
 
+// Listener List
+let listeners = [];
+
 /**
  *  Create the tree described the team map and subscribe to changes
  *  to the tree.
@@ -88,6 +91,16 @@ const createTree = (teamMapKey, fileList) => {
   });
 }
 
+const addListener = (listener) => {
+  listeners.push(listener);
+}
+
+const alertListeners = () => {
+  listeners.forEach((listenerFunc) => {
+    listenerFunc(fileList);
+  })
+}
+
 /**
  * Use with the defined constants for easy and clean subscription
  * to a database element.
@@ -134,6 +147,8 @@ const generateFileKeyToNameMap = (testObject) => {
  * Updates the HTML pre to display the current tree.
  */
 const displayDirectoryTree = () => {
+  alertListeners();
+
   const preField = document.getElementById('tree');
 
   str = generateSourceTree(directoryTree)
@@ -280,6 +295,5 @@ const setEditorToFileKeyMap = (newMap) => {
         // testObject["isLastElementInArray"]     = isLastElementInArray;
         // testObject["directoryTree"]            = directoryTree;
         // testObject["editorToFileKeyMap"]       = editorToFileKeyMap;
-
 
 

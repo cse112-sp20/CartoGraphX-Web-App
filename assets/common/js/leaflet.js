@@ -8,14 +8,18 @@
 var map = L.map('mapid', {
     crs: L.CRS.Simple,
     minZoom: 0,
+    // renderer = L.svg({ padding: 0.01 }),
     preferCanvas: true
     
 });
 var absoluteBoundX = 1280;
 var absoluteBoundY = 720;
-var boundX = 1280;
-var boundY = 720;
+let padding = 150;
+var boundX = absoluteBoundX - padding;
+var boundY = absoluteBoundY - padding;
 var bounds = [[0,0], [absoluteBoundY, absoluteBoundX]];
+var usedPoints = [];
+var circleRadius = 35;
 var image = L.imageOverlay('img/honeycomb-grey-5120x2880.png', bounds, {
     opacity: 0.8,
 }).addTo(map);
@@ -50,48 +54,46 @@ function addFilesToMap(files) {
 }
 
 /*
- * @param files - Object of file keys : names to add
+ * @param files - Array of file names to add
  */
-function filesToMap(keysToNames) {
-    for (let e of keysToNames) {
+function filesToMap(files) {
+
+    
+    for (let e of files) {
         console.log(e);
-        let x_coord = (Math.random()*boundX) % 1000;
-        let y_coord = (Math.random()*boundY) % 600;
-        L.circle([y_coord, x_coord], {
-            color: 'red',
+        let x_coord = (Math.random()*boundX) % 900 + 200;
+        let y_coord = (Math.random()*boundY) % 500 + 100;
+        // L.circle([y_coord, x_coord], {
+        L.circle(genNextPoint(), {
+        // let point = [southWest.lat + latSpan * Math.random(),southWest.lng + lngSpan * Math.random()];
+        // L.circle(point, {
+            color: '#93a',
             fillOpacity: 0.5,
-            radius: 30,
-        }).addTo(map).bindPopup(keysToNames[e].toString()).bindTooltip(keysToNames[e].toString(),
+            radius: 35,
+        }).addTo(map).bindPopup(e.toString()).bindTooltip(e.toString(),
         {permanent: true, direction:"center"}
        ).openTooltip();
     }
 }
+/*
+ * Generate a point with non overlapping area. (Constant radius for all points)
+ */
+function genNextPoint() {
 
-var circle = L.circle([250, 500], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 80
-}).addTo(map).bindPopup("<b>File:</b> test.js\
-Editors: (None)");
-
-var circle2 = L.circle([450, 610], {
-    color: 'green',
-    fillColor: '#1f3',
-    fillOpacity: 0.5,
-    radius: 120
-}).addTo(map).bindPopup("Circle");
-
-var popup = L.popup();
-
-function onMapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
+    var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
+    for (let i = 0; i < usedPoints.length; i++) {
+        if (Math.abs(point[0] - usedPoints[i][0]) < 2*circleRadius + 2 && 
+            Math.abs(point[1] - usedPoints[i][1]) < 2*circleRadius + 2) {
+            // pick a new point and restart
+            var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
+            i = 0;
+        }
+    }
+    usedPoints.push(point);
+    return point;
 }
 
-// map.on('click', onMapClick);
+// TEST CODE
 
 testfiles = { "test.js":100,
               "test2.js":200,
@@ -101,20 +103,18 @@ testfiles = { "test.js":100,
               "test6.js":600,
 }
 
-
-
-// TEST CODE
-
-let keymap = fileList;
-console.log(keymap)
-
+let keymap = fileList.keys();
 // console.log(keymap)
-// filesToMap(keymap)
+addListener(onTreeUpdate); // Tell the tree to call our onTreeUpdate method once it
+                           // has gotten the tree from the database.
 
+function onTreeUpdate(fileList){
+    // filesToMap(directoryTree); // Code to run when the tree has been loaded.
+    filesToMap(fileList)
+}
 
+// addFilesToMap(testfiles)
 
 console.log(Symbol.iterator in Object((keymap)))
-
-
 // console.log(fileKeyToNameMap);
   
