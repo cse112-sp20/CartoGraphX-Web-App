@@ -62,15 +62,17 @@ function activeFilesToMap(fileKeyToNameMap) {
         //     var color = '#00FF7F'
         // }
 
+        var editorString = "<br>Editors: (none)"
         if (listEditorsOf(k).length > 0) {
             L.marker(coords, {icon: avatarIcon}).addTo(map);
+            editorString = "<br>Editors: " + listEditorsOf(k)
         }
 
         L.circle(coords, {
             color: '#00FF7F',
             fillOpacity: 0.5,
             radius: 35,
-        }).addTo(map).bindPopup("Editors: " + listEditorsOf(k)).bindTooltip(v.toString() + '\n' + listEditorsOf(k),
+        }).addTo(map).bindPopup("File: " + v + editorString).bindTooltip(v.toString() + '\n' + listEditorsOf(k),
         {permanent: true, direction:"center"}
        ).openTooltip();
     }
@@ -104,8 +106,7 @@ function random() {
 addListener(onTreeUpdate); // Tell the tree to call our onTreeUpdate method once it
                            // has gotten the tree from the database.
 
-function onTreeUpdate(fileList, fileKeyToNameMap){
-    // filesToMap(fileList) // this works as it should
+function onTreeUpdate(fileKeyToNameMap){
     activeFilesToMap(fileKeyToNameMap)
 
 }
