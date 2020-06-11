@@ -40,10 +40,11 @@ let intervalID        = undefined;
  *  Create the tree described the team map and subscribe to changes
  *  to the tree.
  * 
- * @param {string} teamMapKey The firebase identification key for the map.
+ * @param {string}       teamMapKey The firebase identification key for the map.
  * @param {firebase ref} firebase The firebase reference used to access our database.
+ * @param {function}     callback An optional function to call one time when the tree and tree update logic is done initializing.
  */
-const createTree = (teamMapKey, firebase) => {
+const createTree = (teamMapKey, firebase, callback) => {
   // Reference used to read from database.
   dbAccess = firebase.database();
 
@@ -75,7 +76,7 @@ const createTree = (teamMapKey, firebase) => {
 
       // Only run this once to get our tree displayed / refreshing.
       if(firstTreePrint){
-        displayDirectoryTree();
+        displayDirectoryTree();        
         firstTreePrint            = false;
         directoryStructureChanged = false;
         editorsChanged            = false;
@@ -88,6 +89,10 @@ const createTree = (teamMapKey, firebase) => {
             directoryStructureChanged = false;
           }
         }, SECONDS_PER_REFRESH * 1000);
+
+        if(callback){
+          callback();
+        }
       }
     });
   });
