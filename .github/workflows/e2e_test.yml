@@ -17,6 +17,9 @@ jobs:
       run: npm install
     - name: Running E2E Tests
       run: npm run e2e-test
-    # - run: sudo ./node_modules/.bin/extest setup-tests -c 1.45.0
-    # - run: sudo chmod -R 777 ./test-resources
-    # - run: sudo ./node_modules/.bin/extest run-tests -u ./out/e2e-tests/*.test.js
+    - name: Slack Notification
+      if: ${{ failure() }}
+      uses: rtCamp/action-slack-notify@v2.0.0
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_USERNAME: npmTestBot
