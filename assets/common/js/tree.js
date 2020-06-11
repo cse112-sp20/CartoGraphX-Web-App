@@ -339,3 +339,4 @@ testObject["getDirectoryStructure"]    = getDirectoryStructure;
 testObject["cancelInterval"]           = cancelInterval;
 testObject["getEditorToFileKeyMap"]    = getEditorToFileKeyMap;
 testObject["getFileKeyToNameMap"]      = getFileKeyToNameMap;
+testObject["resetTree"]                = resetTree;
