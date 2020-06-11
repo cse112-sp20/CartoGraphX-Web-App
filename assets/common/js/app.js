@@ -66,7 +66,8 @@ const getUiConfig = () => {
     document.getElementById('mapManagePage').textContent = "Manage Maps";
 
     //load dummy tree
-    createTree("-M8S1dRRYzEbFIZBMaiR", fileList);
+    // createTree("-M8S1dRRYzEbFIZBMaiR", fileList);
+    createTree("-M8S2yMxxr-ycZLThss4", fileList);
   };
   
   

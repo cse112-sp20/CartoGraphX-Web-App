@@ -7,8 +7,7 @@
 
 var map = L.map('mapid', {
     crs: L.CRS.Simple,
-    minZoom: 0,
-    // renderer = L.svg({ padding: 0.01 }),
+    minZoom: -1,
     preferCanvas: true
     
 });
@@ -21,49 +20,25 @@ var bounds = [[0,0], [absoluteBoundY, absoluteBoundX]];
 var usedPoints = [];
 var circleRadius = 35;
 var seed = 3;
-var image = L.imageOverlay('img/honeycomb-grey-5120x2880.png', bounds, {
-    opacity: 0.8,
-}).addTo(map);
-// map.setMaxBounds(bounds);
-// map.setView( [140, 170], 1);
+
+var avatarIcon = L.icon({
+    iconUrl: 'img/avatar.png',
+    fillOpacity: 0.2,
+    iconSize:     [50, 50], // size of the icon
+    iconAnchor:   [25, 60], // point of the icon which will correspond to marker's location
+});
+
+
+map.setMaxBounds(bounds);
 map.fitBounds(bounds);
-
-/*
- * @param files - dictionary of files : sizes to add
- */
-function addFilesToMap(files) {
-    var maxlines = 0;
-    var edge_padding = 200;
-    // Scale radius based on largest file
-    for (var key in files) {
-        if (files[key] > maxlines) {
-            maxlines = files[key];
-        }
-    }
-
-    for (var key in files) {
-        var x_coord = (Math.random()*boundX) % 1000;
-        var y_coord = (Math.random()*boundY) % 600;
-        L.circle([y_coord, x_coord], {
-            color: 'red',
-            fillOpacity: 0.5,
-            radius: 150*files[key]/boundX,
-        }).addTo(map).bindPopup(key.toString()).bindTooltip(key.toString(),
-        {permanent: true, direction:"center"}
-       ).openTooltip();
-    }
-}
 
 /*
  * @param files - Array of file names to add
  */
 function filesToMap(files) {
-
-    
     for (let e of files) {
-        console.log(e);
         L.circle(genNextPoint(), {
-            color: '#93a',
+            color: '#8A2BE2',
             fillOpacity: 0.5,
             radius: 35,
         }).addTo(map).bindPopup(e.toString()).bindTooltip(e.toString(),
@@ -71,18 +46,46 @@ function filesToMap(files) {
        ).openTooltip();
     }
 }
+
+/*
+ * @param fileKeyToNameMap - Dictionary of File keys : file names 
+ * Displays editors on the map
+ */
+function activeFilesToMap(fileKeyToNameMap) {
+    for (let [k,v] of Object.entries(fileKeyToNameMap)) {
+        let coords = genNextPoint()
+
+        // leaflet glitch doesn't display colors properly
+        // if (listEditorsOf(k).length == 0) {
+        //     var color = '#FFFFF'
+        // } else {
+        //     var color = '#00FF7F'
+        // }
+
+        if (listEditorsOf(k).length > 0) {
+            L.marker(coords, {icon: avatarIcon}).addTo(map);
+        }
+
+        L.circle(coords, {
+            color: '#00FF7F',
+            fillOpacity: 0.5,
+            radius: 35,
+        }).addTo(map).bindPopup("Editors: " + listEditorsOf(k)).bindTooltip(v.toString() + '\n' + listEditorsOf(k),
+        {permanent: true, direction:"center"}
+       ).openTooltip();
+    }
+}
+
+
 /*
  * Generate a point with non overlapping area. (Constant radius for all points)
  */
 function genNextPoint() {
-
-    // var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
     var point = [random()*boundY + padding/2, random()*boundX + padding/2];
     for (let i = 0; i < usedPoints.length; i++) {
         if (Math.abs(point[0] - usedPoints[i][0]) < 2*circleRadius + 2 && 
             Math.abs(point[1] - usedPoints[i][1]) < 2*circleRadius + 2) {
             // pick a new point and restart
-            // var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
             var point = [random()*boundY + padding/2, random()*boundX + padding/2];
             i = 0;
         }
@@ -92,33 +95,20 @@ function genNextPoint() {
 }
 
 // Source: https://stackoverflow.com/a/19303725
+// Generates random numbers from seed
 function random() {
     var x = Math.sin(seed++) * 10000;
     return x - Math.floor(x);
 }
 
-// TEST CODE
-
-testfiles = { "test.js":100,
-              "test2.js":200,
-              "test3.js":300,
-              "test4.js":400,
-              "test5.js":500,
-              "test6.js":600,
-}
-
-let keymap = fileList.keys();
-// console.log(keymap)
 addListener(onTreeUpdate); // Tell the tree to call our onTreeUpdate method once it
                            // has gotten the tree from the database.
 
-function onTreeUpdate(fileList){
-    // filesToMap(directoryTree); // Code to run when the tree has been loaded.
-    filesToMap(fileList)
+function onTreeUpdate(fileList, fileKeyToNameMap){
+    // filesToMap(fileList) // this works as it should
+    activeFilesToMap(fileKeyToNameMap)
+
 }
 
-// addFilesToMap(testfiles)
 
-console.log(Symbol.iterator in Object((keymap)))
-// console.log(fileKeyToNameMap);
-  
+

@@ -97,7 +97,7 @@ const addListener = (listener) => {
 
 const alertListeners = () => {
   listeners.forEach((listenerFunc) => {
-    listenerFunc(fileList);
+    listenerFunc(fileList, fileKeyToNameMap);
   })
 }
 
@@ -227,7 +227,7 @@ const listEditorsOf = (fileKey) => {
 
   for(let editorName in editorToFileKeyMap){
     if(editorToFileKeyMap[editorName] == fileKey){
-      str += colorText(editorName, "red") + ", ";
+      str += colorText(editorName, "blue") + ", ";
       fileHadEntry = true;
     }
   }
