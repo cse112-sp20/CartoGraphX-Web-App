@@ -139,6 +139,7 @@ const getUiConfig = () => {
       e.preventDefault();
       const getMapForm = document.querySelector('#mapForm');
       let mapK = getMapForm['mapKey'].value;
+      resetTree(firebase);
       createTree(mapK, firebase);
     });
     // display firebaseUI on button click

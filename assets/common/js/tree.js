@@ -36,6 +36,9 @@ let subscribedToDirectoryTreeChanges = false;
 let isCommandLineTest = false;
 let intervalID        = undefined;
 
+// Used to control our Database access
+let dbAccess = undefined;
+
 /**
  *  Create the tree described the team map and subscribe to changes
  *  to the tree.
@@ -96,6 +99,30 @@ const createTree = (teamMapKey, firebase, callback) => {
       }
     });
   });
+}
+
+/**
+ * Use to reset the listeners of the tree.
+ */
+const resetTree = (firebase) => {
+  // Delete our listeners
+  dbAccess.ref().off();
+  dbAccess = undefined;
+
+  // Stop the update loop
+  cancelInterval(intervalID);
+
+  // Make sure we don't repeat key steps that must be done once.
+  firstTreePrint = true;
+  editorsChanged = false;
+
+  // Only update the tree on these
+  directoryStructureChanged = false;
+  subscribedToDirectoryTreeChanges = false;
+
+  // Command Line Test
+  isCommandLineTest = false;
+  intervalID        = undefined;
 }
 
 /**
@@ -268,7 +295,6 @@ const isLastElementInArray = (arr, index) => {
 
 // TEST CODE
 const setDirectoryStructure = (newMap) => {
-  console.log("Setting directory");
   directoryTree = newMap;
 }
 
