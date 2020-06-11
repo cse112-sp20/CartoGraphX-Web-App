@@ -1,6 +1,6 @@
 {
   "name": "chartgraphx-web-app-mvp",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Displays development metrics from VS Code in an interactive and visual format",
   "main": "index.js",
   "scripts": {
