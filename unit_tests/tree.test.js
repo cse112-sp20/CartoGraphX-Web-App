@@ -24,7 +24,7 @@ describe("Tree", () => {
 
     /** testing listEditorsOf if returning currect editor for file */
     it("should return the right editor for file", () => {
-      assert.equal(testObject.listEditorsOf("filekey1"), '(<span style="color:red">Bob</span>)');
+      assert.equal(testObject.listEditorsOf("filekey1"), '(<span style="color:blue">Bob</span>)');
     });
 
     /** testing listEditorsOf if file does not have an editor */
@@ -39,7 +39,7 @@ describe("Tree", () => {
 
     /** checking if generateSourceTree created correct tree */
     it("should return the right tree", () => {
-      assert.equal(testObject.generateSourceTreeRec(testDirectoryTree, ""), ' └─ root\n     ├─ fileInRoot (<span style=\"color:red\">Bob</span>)\n     └─ subdir\n         └─ file.In.Subdir \n');
+      assert.equal(testObject.generateSourceTreeRec(testDirectoryTree, ""), ' └─ root\n     ├─ fileInRoot (<span style=\"color:blue\">Bob</span>)\n     └─ subdir\n         └─ file.In.Subdir \n');
     });
 
     /** checking if generateSourceTree is given an empty directory */
@@ -49,7 +49,7 @@ describe("Tree", () => {
 
     /** checking if generateSourceTree created correct tree */
     it("should return the right tree", () => {
-      assert.equal(testObject.generateSourceTree(testDirectoryTree), 'root\n ├─ fileInRoot (<span style=\"color:red\">Bob</span>)\n └─ subdir\n     └─ file.In.Subdir \n');
+      assert.equal(testObject.generateSourceTree(testDirectoryTree), 'root\n ├─ fileInRoot (<span style=\"color:blue\">Bob</span>)\n └─ subdir\n     └─ file.In.Subdir \n');
     });
 
     /** checking if generateSourceTree is given an empty directory */

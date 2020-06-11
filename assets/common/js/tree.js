@@ -311,14 +311,6 @@ const cancelInterval = () => {
   clearInterval(intervalID);
 }
 
-const setCommandLineTest = () => {
-  isCommandLineTest = true;
-}
-
-const cancelInterval = () => {
-  clearInterval(intervalID);
-}
-
 testObject                             = {}
 testObject["setDirectoryTree"]         = setDirectoryStructure;
 testObject["generateSourceTree"]       = generateSourceTree;
