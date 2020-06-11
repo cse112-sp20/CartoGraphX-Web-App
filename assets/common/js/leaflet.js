@@ -20,6 +20,7 @@ var boundY = absoluteBoundY - padding;
 var bounds = [[0,0], [absoluteBoundY, absoluteBoundX]];
 var usedPoints = [];
 var circleRadius = 35;
+var seed = 3;
 var image = L.imageOverlay('img/honeycomb-grey-5120x2880.png', bounds, {
     opacity: 0.8,
 }).addTo(map);
@@ -61,12 +62,7 @@ function filesToMap(files) {
     
     for (let e of files) {
         console.log(e);
-        let x_coord = (Math.random()*boundX) % 900 + 200;
-        let y_coord = (Math.random()*boundY) % 500 + 100;
-        // L.circle([y_coord, x_coord], {
         L.circle(genNextPoint(), {
-        // let point = [southWest.lat + latSpan * Math.random(),southWest.lng + lngSpan * Math.random()];
-        // L.circle(point, {
             color: '#93a',
             fillOpacity: 0.5,
             radius: 35,
@@ -80,17 +76,25 @@ function filesToMap(files) {
  */
 function genNextPoint() {
 
-    var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
+    // var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
+    var point = [random()*boundY + padding/2, random()*boundX + padding/2];
     for (let i = 0; i < usedPoints.length; i++) {
         if (Math.abs(point[0] - usedPoints[i][0]) < 2*circleRadius + 2 && 
             Math.abs(point[1] - usedPoints[i][1]) < 2*circleRadius + 2) {
             // pick a new point and restart
-            var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
+            // var point = [Math.random()*boundY + padding/2, Math.random()*boundX + padding/2];
+            var point = [random()*boundY + padding/2, random()*boundX + padding/2];
             i = 0;
         }
     }
     usedPoints.push(point);
     return point;
+}
+
+// Source: https://stackoverflow.com/a/19303725
+function random() {
+    var x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
 }
 
 // TEST CODE
