@@ -1,6 +1,6 @@
 {
   "name": "chartgraphx-web-app-mvp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Displays development metrics from VS Code in an interactive and visual format",
   "main": "index.js",
   "scripts": {
@@ -61,5 +61,7 @@
       "@semantic-release/npm"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "firebase": "^7.15.0"
+  }
 }

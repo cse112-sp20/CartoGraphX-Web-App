@@ -32,13 +32,18 @@ let editorsChanged = false;
 let directoryStructureChanged = false;
 let subscribedToDirectoryTreeChanges = false;
 
+// Command Line Test
+let isCommandLineTest = false;
+let intervalID        = undefined;
+
 /**
  *  Create the tree described the team map and subscribe to changes
  *  to the tree.
  * 
  * @param {string} teamMapKey The firebase identification key for the map.
+ * @param {firebase ref} firebase The firebase reference used to access our database.
  */
-const createTree = (teamMapKey) => {
+const createTree = (teamMapKey, firebase) => {
   // Reference used to read from database.
   dbAccess = firebase.database();
 
@@ -76,7 +81,7 @@ const createTree = (teamMapKey) => {
         editorsChanged            = false;
 
         // Once we have loaded all the necessary information, 
-        setInterval(() => { 
+        intervalID = setInterval(() => { 
           if(editorsChanged || directoryStructureChanged){
             displayDirectoryTree(); 
             editorsChanged            = false;
@@ -131,10 +136,12 @@ const generateFileKeyToNameMap = () => {
  * Updates the HTML pre to display the current tree.
  */
 const displayDirectoryTree = () => {
-  const preField = document.getElementById('tree');
-
   str = generateSourceTree(directoryTree)
-  preField.innerHTML = str;
+
+  if(!isCommandLineTest){
+    const preField = document.getElementById('tree');
+    preField.innerHTML = str;
+  }
 }
 
 // Various parts of the following code to print the directory tree structure are 
@@ -255,15 +262,33 @@ const isLastElementInArray = (arr, index) => {
 
 
 // TEST CODE
-
 const setDirectoryStructure = (newMap) => {
+  console.log("Setting directory");
   directoryTree = newMap;
 }
 
+const getDirectoryStructure = () => {
+  return directoryTree;
+}
+
+const getEditorToFileKeyMap = () => {
+  return editorToFileKeyMap;
+}
+
+const getFileKeyToNameMap = () => {
+  return fileKeyToNameMap;
+}
 const setEditorToFileKeyMap = (newMap) => {
   editorToFileKeyMap = newMap;
 }
 
+const setCommandLineTest = () => {
+  isCommandLineTest = true;
+}
+
+const cancelInterval = () => {
+  clearInterval(intervalID);
+}
 
 testObject                             = {}
 testObject["setDirectoryTree"]         = setDirectoryStructure;
@@ -277,3 +302,9 @@ testObject["isLastElementInArray"]     = isLastElementInArray;
 testObject["directoryTree"]            = directoryTree;
 testObject["fileKeyToNameMap"]         = fileKeyToNameMap;
 testObject["editorToFileKeyMap"]       = editorToFileKeyMap;
+testObject["createTree"]               = createTree;
+testObject["setCommandLineTest"]       = setCommandLineTest;
+testObject["getDirectoryStructure"]    = getDirectoryStructure;
+testObject["cancelInterval"]           = cancelInterval;
+testObject["getEditorToFileKeyMap"]    = getEditorToFileKeyMap;
+testObject["getFileKeyToNameMap"]      = getFileKeyToNameMap;
