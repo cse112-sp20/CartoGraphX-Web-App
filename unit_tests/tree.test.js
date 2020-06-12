@@ -7,8 +7,10 @@ var firebase = require("firebase");
  * and then test that the generateSourceTree return the correct source tree. 
  */
 describe("Tree", () => {
+  testObject.setCommandLineTest();
   describe("#generateSourceTree()", () => {
     /** setup for testing */
+
     let testDirectoryTree = {"root": {"fileInRoot": "filekey1", "subdir": {"file,In,Subdir": "filekey2"}}};
     let editorToFileMap = {"Bob": "filekey1"};
 
@@ -100,7 +102,9 @@ describe("Tree", () => {
       console.log("Doing firebase test");
   
       firebase.initializeApp(config)
-      testObject.createTree("-M8S2yMxxr-ycZLThss4", firebase, () => {
+      testObject.createTree("TEST_MAP", firebase);
+  
+      setTimeout(() => {
         assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
         assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
         assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);

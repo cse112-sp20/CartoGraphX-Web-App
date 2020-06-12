@@ -61,11 +61,76 @@ const getUiConfig = () => {
     // update header
     document.getElementById('userPage').textContent = "Profile";
     document.getElementById('mapManagePage').textContent = "Manage Maps";
-
-    //load dummy tree
-    createTree("-M8S1dRRYzEbFIZBMaiR", firebase);
-  
+   
+    fetchMaps()  
   };
+  /*
+    temporary solution requiring you to host the firebase cloud functions locally
+  */
+  const baseUrl = 'http://localhost:5000/remote-13/us-central1/api';
+  /**
+   * Fetches the maps of the current user and displays the first in the list
+   * Adds evenlistener on all maps in team-maps ul.
+   */
+  const fetchMaps = () => {
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+      fetch(baseUrl+'/map/showMaps',{
+        headers: {
+          idToken
+        }  
+      }).then(res =>res.json())
+      .then( data => {
+        // ensure empty list to omit duplicate li
+        const ul = document.getElementById('team-maps');
+        while( ul.firstChild ){
+          ul.removeChild( ul.firstChild );
+        }
+        var mapKeys = [];
+        for(var k in data.result) mapKeys.push(k);
+        mapKeys.sort();
+        createTree(mapKeys[0], firebase);
+        addElementsToUl(mapKeys);
+      }).catch( e =>{
+        console.log(e);
+      });
+    });
+  }
+
+  const addElementsToUl = (mapKeys) => {
+    // update content of team-maps ul 
+    for (i=0; i<mapKeys.length; i++){
+      var li = document.createElement('li');
+      li.id = i==0? 'mapkey_listitem-active':"mapkey_listitem";
+      li.appendChild(document.createTextNode(mapKeys[i]));
+      document.getElementById('team-maps').appendChild(li); 
+
+      // eventlistener to update li styles and calls createTree for new selected tree
+      li.addEventListener('click', e =>{
+        const mapList = document.getElementById('team-maps').childNodes;
+        mapList.forEach( map => {
+          if (map.target?.innerText !== e.target.innerText){
+            map.id = 'mapkey_listitem';
+          }
+        })
+        e.target.id = 'mapkey_listitem-active'; 
+        createTree(e.target.innerText, firebase); 
+      })
+    }
+  }
+
+  const addMap = (mapKey) => {
+    console.log(JSON.stringify({mapKey}));
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+      fetch(baseUrl+'/map/joinMap',{
+        method: 'POST',
+        headers: {idToken},
+        body: JSON.stringify({mapKey})
+      }).catch( e =>{
+        console.log(e);
+      });
+      fetchMaps();
+    });
+  }
   
   
   /**
@@ -134,13 +199,16 @@ const getUiConfig = () => {
         'click', () => {
           deleteAccount();
     });
-
+    // add new map to 'Manage Maps'
     document.addEventListener('submit', (e) => {
       e.preventDefault();
       const getMapForm = document.querySelector('#mapForm');
       let mapK = getMapForm['mapKey'].value;
-      createTree(mapK, firebase);
+      addMap(mapK);
+      getMapForm['mapKey'].value = "";
     });
+
+    
     // display firebaseUI on button click
     document.getElementById('large-sign-button').addEventListener('click', () => {
       document.getElementById('large-sign-button').style.display = 'none';
