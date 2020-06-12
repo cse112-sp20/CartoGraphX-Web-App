@@ -43,24 +43,42 @@
 
 
     <section>
-        <article><p><a href="https://codeclimate.com/github/cse112-sp20/CartoGraphX-Web-App/maintainability"><img src="https://api.codeclimate.com/v1/badges/9adcf7b86bfb69c9d32d/maintainability" alt="Maintainability"></a> <img src="https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Test%20coverage/badge.svg" alt="Test coverage"> <img src="https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/E2E%20Tests/badge.svg" alt="E2E Tests">  <img src="https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Unit%20Tests/badge.svg" alt="Unit Tests"> <img src="https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Release/badge.svg" alt="Release"></p>
-<h1>CartoGraphX Web App</h1>
+        <article><h1>CartoGraphX Web App</h1>
 <p><img src="https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Test%20coverage/badge.svg" alt="Test coverage"> <img src="https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Unit%20&amp;%20E2E%20Tests/badge.svg" alt="Unit &amp; E2E Tests">
-<img align="center" src="https://github.com/cse112-sp20/CartoGraphX-Web-App/blob/readme/readme.img/CartoGraphX_banner.png"/></p>
+<img align="center" src="https://github.com/cse112-sp20/CartoGraphX-Web-App/blob/master/readme.img/CartoGraphX_banner.png"/></p>
 <p>The CartoGraphX Web App is used to display the tracked user-metrics gathered by the CartoGraphX VSCode extension. Currently, the project structure and the current editors of each file are displayed. This tool will greatly increase accountability because each developer’s work will be visible in real time.</p>
 <h2>Running the web app</h2>
 <p>To run the web app and see your changes reflected, you can follow the instructions under the &quot;Development&quot; section. You can then log in using the account you've created in the VS Code Extension. You will then be able to view maps you've created by using the team map ID code specified in the extension.</p>
 <h2>Features</h2>
-<img align="center" src="https://github.com/cse112-sp20/CartoGraphX-Web-App/blob/readme/readme.img/CartoGraphX_webapp_mapview.png"/>
+<img align="center" src="https://github.com/cse112-sp20/CartoGraphX-Web-App/blob/master/readme.img/CartoGraphX_webapp_mapview.png"/>
 <p>CartoGraphX users are able to sign into the sign in using an email address and password created through the exentension.</p>
 <p>When signed in, a user can delete their account, sign out, or display one of their project maps using an existing team map ID.</p>
 <h2>Development</h2>
 <p>To get started, all you need to do is clone this repository and then run &quot;npm install&quot; to
 install and update the packages required to run the site. To open the site, you must open index.html.</p>
 <h2>Testing</h2>
-<p>Use npm install to install/update packages locally</p>
-<p>Use npm run unit-test to run all the mocha tests in the unit_tests directory</p>
-<p>Use npm run e2e-test to run all the nightwatch tests in the e2e_tests directory</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>npm install</td>
+<td>install/update packages locally</td>
+</tr>
+<tr>
+<td>npm run unit-test</td>
+<td>run all the mocha tests in the unit_tests directory</td>
+</tr>
+<tr>
+<td>npm run e2e-test</td>
+<td>run all the nightwatch tests in the e2e_tests directory</td>
+</tr>
+</tbody>
+</table>
 <h2>Requirements</h2>
 <p>Must have npm installed to install / update packages and run tests.</p>
 <h3>1.0.0</h3>
@@ -189,13 +207,13 @@ install and update the packages required to run the site. To open the site, you 
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#fetchMaps">fetchMaps</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li><li><a href="global.html#toggleNav">toggleNav</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#resetTree">resetTree</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li><li><a href="global.html#toggleNav">toggleNav</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Fri Jun 12 2020 05:58:59 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Fri Jun 12 2020 06:03:29 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

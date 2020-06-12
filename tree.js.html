@@ -64,6 +64,9 @@ let subscribedToDirectoryTreeChanges = false;
 let isCommandLineTest = false;
 let intervalID        = undefined;
 
+// Used to control our Database access
+let dbAccess = undefined;
+
 /**
  *  Create the tree described the team map and subscribe to changes
  *  to the tree.
@@ -82,6 +85,13 @@ const createTree = (teamMapKey, firebase, callback) => {
     directoryTreeKey   = snap.val()["rootFolder"];
 
     editorsChanged  = true;
+    
+    if(subscribedToDirectoryTreeChanges){
+      // If we have already subscribed below, then we don't need to run
+      // the section again. The method below will be automatically called
+      // when the directory tree structure is edited.
+      return;
+    }
 
     // Once we have subscribed to the team map info, also subscribe to changes
     // in the directory tree structure.
@@ -117,6 +127,30 @@ const createTree = (teamMapKey, firebase, callback) => {
       }
     });
   });
+}
+
+/**
+ * Use to reset the listeners of the tree.
+ */
+const resetTree = (firebase) => {
+  // Delete our listeners
+  dbAccess.ref().off();
+  dbAccess = undefined;
+
+  // Stop the update loop
+  cancelInterval(intervalID);
+
+  // Make sure we don't repeat key steps that must be done once.
+  firstTreePrint = true;
+  editorsChanged = false;
+
+  // Only update the tree on these
+  directoryStructureChanged = false;
+  subscribedToDirectoryTreeChanges = false;
+
+  // Command Line Test
+  isCommandLineTest = false;
+  intervalID        = undefined;
 }
 
 /**
@@ -181,18 +215,11 @@ const displayDirectoryTree = () => {
  */
 const generateSourceTree = (dir) => {
     let formattedString = "";
-    let firstTopLevel = true;
+
     for(topLevelFile in dir){
-      const dirTopLevelFile = dir[topLevelFile];
-      if(typeof(dirTopLevelFile) === 'string'){
-        formattedString += topLevelFile + "\n";        
+      if(typeof(dir[topLevelFile]) === 'string'){
+        formattedString += topLevelFile + "\n";
       } else {
-        if(firstTopLevel){
-          if(!isCommandLineTest){
-            document.getElementById('tree-name').innerHTML = topLevelFile;
-            firstTopLevel = false;
-          }   
-        }
         formattedString += topLevelFile + "\n";
         formattedString += generateSourceTreeRec(dir[topLevelFile], "");
       }
@@ -296,7 +323,6 @@ const isLastElementInArray = (arr, index) => {
 
 // TEST CODE
 const setDirectoryStructure = (newMap) => {
-  console.log("Setting directory");
   directoryTree = newMap;
 }
 
@@ -340,7 +366,8 @@ testObject["setCommandLineTest"]       = setCommandLineTest;
 testObject["getDirectoryStructure"]    = getDirectoryStructure;
 testObject["cancelInterval"]           = cancelInterval;
 testObject["getEditorToFileKeyMap"]    = getEditorToFileKeyMap;
-testObject["getFileKeyToNameMap"]      = getFileKeyToNameMap;</code></pre>
+testObject["getFileKeyToNameMap"]      = getFileKeyToNameMap;
+testObject["resetTree"]                = resetTree;</code></pre>
         </article>
     </section>
 
@@ -350,13 +377,13 @@ testObject["getFileKeyToNameMap"]      = getFileKeyToNameMap;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#fetchMaps">fetchMaps</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li><li><a href="global.html#toggleNav">toggleNav</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#colorText">colorText</a></li><li><a href="global.html#createTree">createTree</a></li><li><a href="global.html#deleteAccount">deleteAccount</a></li><li><a href="global.html#displayDirectoryTree">displayDirectoryTree</a></li><li><a href="global.html#generateFileKeyToNameMap">generateFileKeyToNameMap</a></li><li><a href="global.html#generateSourceTree">generateSourceTree</a></li><li><a href="global.html#generateSourceTreeRec">generateSourceTreeRec</a></li><li><a href="global.html#getUiConfig">getUiConfig</a></li><li><a href="global.html#handleSignedInUser">handleSignedInUser</a></li><li><a href="global.html#handleSignedOutUser">handleSignedOutUser</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#isLastElementInArray">isLastElementInArray</a></li><li><a href="global.html#listEditorsOf">listEditorsOf</a></li><li><a href="global.html#resetTree">resetTree</a></li><li><a href="global.html#subscribeToChanges">subscribeToChanges</a></li><li><a href="global.html#toggleNav">toggleNav</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Fri Jun 12 2020 05:58:59 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Fri Jun 12 2020 06:03:29 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
