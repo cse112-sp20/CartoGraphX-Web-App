@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/9adcf7b86bfb69c9d32d/maintainability)](https://codeclimate.com/github/cse112-sp20/CartoGraphX-Web-App/maintainability) ![Test coverage](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Test%20coverage/badge.svg) ![E2E Tests](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/E2E%20Tests/badge.svg)  ![Unit Tests](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Unit%20Tests/badge.svg) ![Release](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Release/badge.svg)
+
 # CartoGraphX Web App
 <img align="center" src="https://github.com/cse112-sp20/CartoGraphX-Web-App/blob/readme/readme.img/CartoGraphX_banner.png"/>
 
