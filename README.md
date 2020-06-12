@@ -1,8 +1,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/9adcf7b86bfb69c9d32d/maintainability)](https://codeclimate.com/github/cse112-sp20/CartoGraphX-Web-App/maintainability) ![Test coverage](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Test%20coverage/badge.svg) ![E2E Tests](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/E2E%20Tests/badge.svg)  ![Unit Tests](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Unit%20Tests/badge.svg) ![Release](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Release/badge.svg)
 
 # CartoGraphX Web App
-![Test coverage](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Test%20coverage/badge.svg) ![Unit & E2E Tests](https://github.com/cse112-sp20/CartoGraphX-Web-App/workflows/Unit%20&%20E2E%20Tests/badge.svg)
-<img align="center" src="https://github.com/cse112-sp20/CartoGraphX-Web-App/blob/master/readme.img/CartoGraphX_banner.png"/>
 
 The CartoGraphX Web App is used to display the tracked user-metrics gathered by the CartoGraphX VSCode extension. Currently, the project structure and the current editors of each file are displayed. This tool will greatly increase accountability because each developer’s work will be visible in real time.
 
