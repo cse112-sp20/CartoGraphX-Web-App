@@ -22,6 +22,8 @@ var circleRadius = 35;
 var initialSeed = 3;
 var seed = initialSeed;
 
+var layerGroup = L.layerGroup().addTo(map)
+
 var avatarIcon = L.icon({
     iconUrl: 'img/avatar.png',
     fillOpacity: 0.2,
@@ -69,13 +71,15 @@ function activeFilesToMap(fileKeyToNameMap) {
             editorString = "<br>Editors: " + listEditorsOf(k)
         }
 
-        L.circle(coords, {
-            color: '#00FF7F',
-            fillOpacity: 0.5,
-            radius: 35,
-        }).addTo(map).bindPopup("File: " + v + editorString).bindTooltip(v.toString() + '\n' + listEditorsOf(k),
-        {permanent: true, direction:"center"}
-       ).openTooltip();
+        layerGroup.addLayer(
+            L.circle(coords, {
+                color: '#00FF7F',
+                fillOpacity: 0.5,
+                radius: 35,
+            }).addTo(map).bindPopup("File: " + v + editorString).bindTooltip(v.toString() + '\n' + listEditorsOf(k),
+            {permanent: true, direction:"center"}
+            ).openTooltip()
+        )
     }
 }
 
@@ -108,9 +112,7 @@ function random() {
 function resetMap() {
     seed = initialSeed
     usedPoints = []
-    map.eachLayer(function (layer) {
-        map.removeLayer(layer);
-    });
+    layerGroup.clearLayers()
 }
 
 addListener(onTreeUpdate); // Tell the tree to call our onTreeUpdate method once it
