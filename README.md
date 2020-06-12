@@ -30,3 +30,6 @@ Must have npm installed to install / update packages and run tests.
 
 ### 1.0.0
 Initial release
+
+## Known Issues
+Due to an issue where we can't push our new API to Google cloud functions, users will have to install the local API to their development environment.
