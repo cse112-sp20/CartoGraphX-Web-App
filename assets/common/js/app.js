@@ -63,7 +63,7 @@ var handleSignedInUser = (user) => {
   document.getElementById('mapManagePage').textContent = "Manage Maps";
 
   //load dummy tree
-  createTree("-M8S2yMxxr-ycZLThss4", firebase);
+  createTree("-M9__SlA6yyS5jNTwe3P", firebase);
 };
 
 
@@ -121,7 +121,7 @@ const toggleNav = () => {
 
 
 
-/**
+/**f
  * Initializes the app.
  */
 var initApp = () => {

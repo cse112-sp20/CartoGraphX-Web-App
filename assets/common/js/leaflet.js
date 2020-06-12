@@ -19,7 +19,8 @@ var boundY = absoluteBoundY - padding;
 var bounds = [[0,0], [absoluteBoundY, absoluteBoundX]];
 var usedPoints = [];
 var circleRadius = 35;
-var seed = 3;
+var initialSeed = 3;
+var seed = initialSeed;
 
 var avatarIcon = L.icon({
     iconUrl: 'img/avatar.png',
@@ -103,12 +104,22 @@ function random() {
     return x - Math.floor(x);
 }
 
+// Completely redraw map on db refresh
+function resetMap() {
+    seed = initialSeed
+    usedPoints = []
+    map.eachLayer(function (layer) {
+        map.removeLayer(layer);
+    });
+}
+
 addListener(onTreeUpdate); // Tell the tree to call our onTreeUpdate method once it
                            // has gotten the tree from the database.
 
 function onTreeUpdate(fileKeyToNameMap){
+    // console.log(fileKeyToNameMap)
+    resetMap()
     activeFilesToMap(fileKeyToNameMap)
-
 }
 
 
