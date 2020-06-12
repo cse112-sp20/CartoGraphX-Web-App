@@ -1,0 +1,30 @@
+name: Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  unit_test:
+    name: Running Unit Tests with npm
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: Install npm
+      run: npm install
+    - name: Run unit tests
+      uses: GabrielBB/xvfb-action@v1.0
+      with:
+        run: npm run unit-test
+    - name: Slack Notification
+      if: ${{ failure() }}
+      uses: rtCamp/action-slack-notify@v2.0.0
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_USERNAME: npmTestBot

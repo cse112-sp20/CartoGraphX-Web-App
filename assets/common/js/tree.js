@@ -56,13 +56,6 @@ const createTree = (teamMapKey, firebase, callback) => {
     directoryTreeKey   = snap.val()["rootFolder"];
 
     editorsChanged  = true;
-    
-    if(subscribedToDirectoryTreeChanges){
-      // If we have already subscribed below, then we don't need to run
-      // the section again. The method below will be automatically called
-      // when the directory tree structure is edited.
-      return;
-    }
 
     // Once we have subscribed to the team map info, also subscribe to changes
     // in the directory tree structure.
@@ -176,11 +169,18 @@ const displayDirectoryTree = () => {
  */
 const generateSourceTree = (dir) => {
     let formattedString = "";
-
+    let firstTopLevel = true;
     for(topLevelFile in dir){
-      if(typeof(dir[topLevelFile]) === 'string'){
-        formattedString += topLevelFile + "\n";
+      const dirTopLevelFile = dir[topLevelFile];
+      if(typeof(dirTopLevelFile) === 'string'){
+        formattedString += topLevelFile + "\n";        
       } else {
+        if(firstTopLevel){
+          if(!isCommandLineTest){
+            document.getElementById('tree-name').innerHTML = topLevelFile;
+            firstTopLevel = false;
+          }   
+        }
         formattedString += topLevelFile + "\n";
         formattedString += generateSourceTreeRec(dir[topLevelFile], "");
       }
