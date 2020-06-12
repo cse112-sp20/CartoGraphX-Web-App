@@ -18,6 +18,12 @@ When signed in, a user can delete their account, sign out, or display one of the
 To get started, all you need to do is clone this repository and then run "npm install" to
 install and update the packages required to run the site. To open the site, you must open index.html.
 
+For now, you have to run the firebase cloud-functions locally. To do this, clone the CartoGraphx VS Code Extension repo:  
+https://github.com/cse112-sp20/CartoGraphX-VS-Extension  
+
+Then, navigate to `CartoGraphX-VS-Extension/clound-functions/functions/` and run: `firebase serve --only functions`  
+Make sure you have installed 'firebase-tools': `npm install -g firebase-tools`  
+
 ## Testing
 | Command           | Description                                               |
 | ---               | ---                                                       |
