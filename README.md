@@ -35,8 +35,7 @@ Make sure you have installed 'firebase-tools': `npm install -g firebase-tools`
 ## Requirements
 Must have npm installed to install / update packages and run tests.
 
-### 1.0.0
-Initial release
+### 1.2.1
 
 ## Known Issues
 Due to an issue where we can't push our new API to Google cloud functions, users will have to install the local API to their development environment.
