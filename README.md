@@ -21,7 +21,8 @@ install and update the packages required to run the site. To open the site, you 
 For now, you have to run the firebase cloud-functions locally. To do this, clone the CartoGraphx VS Code Extension repo:  
 https://github.com/cse112-sp20/CartoGraphX-VS-Extension  
 
-Then, navigate to `CartoGraphX-VS-Extension/clound-functions/functions/` and run: `firebase serve --only functions`  
+Then, request the 'serviceAccount.json' file from one of the Remote13 developers. Add this file at `/clound-functions/functions/serviceAccount.json`  
+navigate to `CartoGraphX-VS-Extension/clound-functions/functions/` and run: `firebase serve --only functions`  
 Make sure you have installed 'firebase-tools': `npm install -g firebase-tools`  
 
 ## Testing

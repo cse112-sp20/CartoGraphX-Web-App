@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Please use 'npm run unit-test' for unit tests and 'npm run e2e-test' for e2e tests.\" && exit 0",
     "unit-test": "./node_modules/.bin/mocha 'unit_tests/**/*.test.js' ",
-    "e2e-test": "./node_modules/.bin/nightwatch",
-    "doc": "./node_modules/.bin/jsdoc -c jsdoc.json",
+    "e2e-test": "./node_modules/.bin/nightwatch -c config/nightwatch.conf.js",
+    "doc": "./node_modules/.bin/jsdoc -c config/jsdoc.json",
     "code-cov": "npm i nyc && nyc npm run unit-test",
     "local-pipeline": "npm run unit-test && npm run e2e-test && npm run doc && npm run code-cov"
   },
