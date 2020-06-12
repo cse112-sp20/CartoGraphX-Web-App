@@ -254,6 +254,25 @@ var initApp = () => {
   document.querySelector('#manage-close-button i').addEventListener('click', () => {
     document.getElementById('mapmanage-container').style.display = 'none';
   });
+  //visualization choices
+  document.querySelectorAll('#visualization-choices button').forEach( element => {
+    element.addEventListener('click', (e) =>{
+      const choices = document.getElementById('visualization-choices').childNodes;
+      choices.forEach( choice => {
+        if (choice.target?.innerText !== e.target.innerText){
+    
+          choice.id = 'visualization-choice';
+          if(choice.value) {
+            document.getElementById(choice.value).style.display = 'none';
+
+          }
+        }
+      })
+      e.target.id = 'visualization-choice-active'; 
+      document.getElementById(e.target.value).style.display = 'flex';
+    })
+
+  });
 
 };
 
