@@ -102,9 +102,7 @@ describe("Tree", () => {
       console.log("Doing firebase test");
   
       firebase.initializeApp(config)
-      testObject.createTree("TEST_MAP", firebase);
-  
-      setTimeout(() => {
+      testObject.createTree("TEST_MAP", firebase, () => {
         assert.equal('Mini-project-CRUD-app' in testObject.getDirectoryStructure(), true);
         assert.equal('Phillip' in testObject.getEditorToFileKeyMap(), true);
         assert.equal(testObject.getEditorToFileKeyMap()['Phillip'] in testObject.getFileKeyToNameMap(), true);
