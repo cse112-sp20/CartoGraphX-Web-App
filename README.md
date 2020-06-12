@@ -21,11 +21,11 @@ To get started, all you need to do is clone this repository and then run "npm in
 install and update the packages required to run the site. To open the site, you must open index.html.
 
 ## Testing
-Use npm install to install/update packages locally  
-
-Use npm run unit-test to run all the mocha tests in the unit_tests directory  
-
-Use npm run e2e-test to run all the nightwatch tests in the e2e_tests directory  
+| Command           | Description                                               |
+| ---               | ---                                                       |
+| npm install       | install/update packages locally                           |
+| npm run unit-test | run all the mocha tests in the unit_tests directory       |
+| npm run e2e-test  | run all the nightwatch tests in the e2e_tests directory   |
 
 ## Requirements
 Must have npm installed to install / update packages and run tests.
