@@ -32,6 +32,8 @@ let editorsChanged = false;
 let directoryStructureChanged = false;
 let subscribedToDirectoryTreeChanges = false;
 
+// Listener List
+let listeners = [];
 // Command Line Test
 let isCommandLineTest = false;
 let intervalID        = undefined;
@@ -73,7 +75,7 @@ const createTree = (teamMapKey, firebase, callback) => {
         firstTreePrint            = false;
         directoryStructureChanged = false;
         editorsChanged            = false;
-
+        
         // Once we have loaded all the necessary information, 
         intervalID = setInterval(() => { 
           if(editorsChanged || directoryStructureChanged){
@@ -89,6 +91,16 @@ const createTree = (teamMapKey, firebase, callback) => {
       }
     });
   });
+}
+
+const addListener = (listener) => {
+  listeners.push(listener);
+}
+
+const alertListeners = () => {
+  listeners.forEach((listenerFunc) => {
+    listenerFunc(fileKeyToNameMap);
+  })
 }
 
 /**
@@ -112,6 +124,7 @@ const generateFileKeyToNameMap = () => {
   let toSearch    = [directoryTree];
   let fileKeyList = [];
 
+  console.log('gen');
   // Find the non-directory files.
   while(!(toSearch.length == 0)){
     subDir = toSearch.pop();
@@ -128,12 +141,15 @@ const generateFileKeyToNameMap = () => {
       }
     }
   }
+
 }
 
 /**
  * Updates the HTML pre to display the current tree.
  */
 const displayDirectoryTree = () => {
+  alertListeners();
+
   str = generateSourceTree(directoryTree)
 
   if(!isCommandLineTest){
@@ -221,7 +237,7 @@ const listEditorsOf = (fileKey) => {
 
   for(let editorName in editorToFileKeyMap){
     if(editorToFileKeyMap[editorName] == fileKey){
-      str += colorText(editorName, "red") + ", ";
+      str += colorText(editorName, "blue") + ", ";
       fileHadEntry = true;
     }
   }
