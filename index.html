@@ -73,20 +73,25 @@
               </div>
             </div>
             <!-- Visualization UI -->
-            <div id="map-container">
-              <div id="map">
+            <div id="visualization-container">
+              <div id="visualization-choices">
+                  <button id="visualization-choice-active" value="map-container">Map View</button>
+                  <button id="visualization-choice" value="tree-container">Tree View</button>
+              </div>
+              <div id="map-container" >
                 <h1 id="map-name">Map View</h1>
-
                 <div id="mapid" style="height: 720px; width: 1280px; background-color: whitesmoke;">
                 <!-- <script type="module" src="assets/common/js/leaflet.js"></script> -->
                 </div>
+              </div>
 
+              <div id="tree-container" class="hidden">
                 <h1 id="tree-name">Tree View</h1>
                 <pre id="tree">
                   <!--Tree!-->
                 </pre>
-
               </div>
+   
             </div>
 
             <div id="mapmanage-container" class="hidden">

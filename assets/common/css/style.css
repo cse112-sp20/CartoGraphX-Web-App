@@ -294,7 +294,30 @@ button:focus {
 #new-user-info a{
   color: var(--color-brand-400);
 }
-#map{
+
+#visualization-choices{
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+#visualization-choice{
+  border-radius: 0;
+  height: calc(2 * var(--size-form-height));
+  width: 30vw;
+  color: white !important;
+  background-color: var(--color-brand-100);
+}
+#visualization-choice:hover{
+  background-color: var(--color-dark-100) !important;
+}
+#visualization-choice-active{
+  border-radius: 0;
+  height: calc(2 * var(--size-form-height));
+  width: 30vw;
+  color: white !important;
+  background-color: var(--color-dark-100) !important;
+}
+#tree-container{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -303,8 +326,15 @@ button:focus {
 #tree{
   text-align: left;
 }
-
+#map-container{
+  width: 90vw !important;
+  margin: auto auto;
+  overflow-x: hidden;
+  flex-direction: column;
+  
+}
 #mapmanage-container{
+  z-index: 999;
   position: absolute;
   width: 50vw;
   height: 50vh;
